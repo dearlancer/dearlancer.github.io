@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "WebView的使用!"
+date:   2015-08-18 15:07:19
+categories: [tutorial]
+comments: true
+---
+#android WebView使用 	
+webView的方法	
+String getUrl() //获取当前页面的url	
+reload() //刷新当前页面	
+boolean canGoBack() //是否可以回退	
+boolean canGoForward() 是否可以前进	
+boolean canGoBackOrForward(int steps)  以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。	
+goBack(） //回退到上一页	
+goForward() //前进到下一页	
+goBackOrForward(int steps)  //以当前页面为起始点，前进或后退历史记录中指定的步数，正数为前进，负数为后退		
+clearCache(boolean includeDiskFiles)  清空网页访问留下的缓存数据 includeDiskFiles是否清空磁盘数据			
+clearHistory()	//清除当前webview访问的历史记录		
+clearFormData()  //清除自动完成填充的表单数据	
+onPause()   //当页面被失去焦点被切换到后台不可见状态，需要执行onPause操作 结合窗口的生命周期来使用		
+onResume() 	//在先前调用 onPause() 后，我们可以调用该方法来恢复WebView的运行	
+pauseTimers()	//该方法面向全局整个应用程序的webview，它会暂停所有webview的layout，parsing，JavaScript Timer
+resumeTimers()  //恢复pauseTimers时的所有操作 		
+destroy() 	//销毁WebView
+getScrollY()  //返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离	
+getHeight()  //返回当前WebView这个容器的高度
+getContentHeight()  //返回整个HTML页面的高度
+
+if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
+    //已经处于底端
+}
+if(webView.getScrollY() == 0){
+    //处于顶端
+}
+
+pageUp(boolean top)   //将WebView展示的页面滑动至顶部	
+pageDown(boolean bottom)   //将WebView展示的页面滑动至底部
