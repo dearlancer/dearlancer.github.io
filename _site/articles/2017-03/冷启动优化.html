@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>冷启动优化</title>
+  <meta name="description" content="android之冷启动优化">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/leonids-logo.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="冷启动优化">冷启动优化</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        12 MAR 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>应用启动过程从用户点击launcher图标到看到第一帧这个过程中，主要会经过以下这些过程：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>main()-&gt;Application:attachBaseContext()-&gt;onCreate()-&gt;Activity:onCreate()-&gt;onStart()-&gt;onPostCreate()-&gt;onResume()-&gt;onPostResume()
+</code></pre>
+</div>
+<p>而一般我们的初始化任务主要都会集中化在Application:onCreate()方法中，这就使得初始化任务在第一帧绘制之前得完成，这就造成了卡图标、应用启动慢。那么把任务打散呢？分散在LaunchActivity中去分段初始化？还是不行的，因为界面开始绘制是在onResume()方法开始后才开始绘制，所以，得从Activity的创建过程找办法。
+main-&gt;Activity创建的这个过程会经过一系列framework层的操作，这些操作都是系统自动执行的，不易进行优化，不过可以在Activity创建这个过程前后来找一些蛛丝马迹，因为Activity的创建都会辗转到ActivityThread:performLaunchActivity()这个方法中，在这个方法中可以知道这么几件事：</p>
+<ol>
+  <li>先通过Instrumentation:newActivity()来创建一个Activity实例</li>
+  <li>再判断Application实例是否已创建，已创建则直接返回，否则调用
+Instrumentation:newApplication()来创建Application实例，在这个过程中会依次执行attachBaseContext()和onCreate()方法</li>
+  <li>之后Activity:attach()方法会创建一个PhoneWindow对象，它就是界面，它有一个DecorView，调用setContentView()时会给配置DecorView，其中就会设置一个背景：
+    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">getContainer</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
+<span class="n">final</span> <span class="no">Drawable</span> <span class="n">background</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">mBackgroundResource!</span><span class="o">=</span><span class="mi">0</span><span class="p">){</span>
+  <span class="n">background</span><span class="o">=</span><span class="n">getContext</span><span class="p">().</span><span class="nf">getDrawable</span><span class="p">(</span> <span class="n">mBackgroundResource</span> <span class="p">);</span>  <span class="sr">//</span><span class="err">此处</span><span class="n">background</span><span class="err">来自</span><span class="n">theme</span><span class="err">中设置的</span><span class="n">windowbackgroud</span>
+<span class="p">}</span><span class="k">else</span><span class="p">{</span>
+  <span class="n">background</span><span class="o">=</span> <span class="n">mBackgroundResource</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">mDecor</span><span class="p">.</span><span class="nf">setWindowBackground</span><span class="p">(</span> <span class="n">background</span> <span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+    </div>
+    <p>我们的View也是add进DecorView中显示，它作为RootView肯定是最先显示，所以可以给它设置个默认背景</p>
+  </li>
+  <li>最后依次调用Activity的onCreate、onStart等方法</li>
+</ol>
+
+<h2 id="优化措施">优化措施</h2>
+<ol>
+  <li>任务分级</li>
+  <li>任务并行      (可以并行的次要任务可以放在子线程中执行)</li>
+  <li>界面预显示  （设置theme的windowbackground）
+对于任务集中初始化化、耗时初始化原因导致应用在中低端机启动过慢，而Activity界面绘制的时机导致简单的将任务分给Activity初始化也不起作用，我们必须找一个切入点
+界面的创建和界面的绘制，这两个过程第一个是Application的attachBaseConte和onCreate这两个方法影响的，第二个则是Application创建一直到界面绘制
+所以，可以对任务进行分级的临界点可以这样分：</li>
+  <li>CoreSDK——Application的创建</li>
+  <li>HighPrioritySDK——Activity的创建</li>
+  <li>LowPrioritySDK——Activity界面完成绘制</li>
+  <li>AsyncSDK——Activity的创建</li>
+</ol>
+
+<p>分级带来的问题
+正常启动过程那肯定是没问题的，不过有这么几种场景：</p>
+<ol>
+  <li>App切回后台，内存不足导致Application被回收，从最近任务列表中恢复界面时Application需重新创建</li>
+  <li>应用没挂起时，Push推送需从Notification跳入应用内某界面</li>
+  <li>应用没挂起时，浏览器外链需跳入应用内某界面
+这些Case可能导致的问题是被跳入的界面使用到了未初始化的SDK，可能导致Crash或者数据异常，所以目标页面启动前必须确保SDK已经初始化，这个过程的原因是没有唤起启动页来初始化SDK，可以通过hook newActivity解决，其中判断Application是否初始化和各个SDK是否初始化，并且判断该次启动不来自系统的Launcher。</li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">HookInstrumentation</span> <span class="n">extends</span> <span class="no">Instrumentation</span><span class="p">{</span>
+    <span class="vi">@Override</span>
+    <span class="kp">public</span> <span class="no">Activity</span> <span class="n">newActivity</span><span class="p">(</span><span class="no">ClassLoader</span> <span class="n">cl</span><span class="p">,</span> <span class="no">String</span> <span class="n">className</span><span class="p">,</span> <span class="no">Intent</span> <span class="n">intent</span><span class="p">)</span> <span class="n">throws</span> <span class="no">InstantiationException</span><span class="p">,</span> <span class="no">IllegalAccessException</span><span class="p">,</span> <span class="no">ClassNotFoundException</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">intent</span><span class="p">.</span><span class="nf">hasCategory</span><span class="p">(</span><span class="no">Intent</span><span class="o">.</span><span class="no">CATEGORY_LAUNCHER</span><span class="p">)){</span>
+            <span class="no">SdkUntil</span><span class="p">.</span><span class="nf">initHighSDK</span><span class="p">();</span>
+            <span class="no">SdkUntil</span><span class="p">.</span><span class="nf">initLowSDK</span><span class="p">();</span>
+            <span class="no">SdkUntil</span><span class="p">.</span><span class="nf">initAsyncSDK</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">super</span><span class="p">.</span><span class="nf">newActivity</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">className</span><span class="p">,</span> <span class="n">intent</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>通过反射将原来的Instrumentation hook掉</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">attachContext</span><span class="p">()</span> <span class="n">throws</span> <span class="no">Exception</span><span class="p">{</span>
+        <span class="sr">//</span> <span class="err">先获取到当前的</span><span class="no">ActivityThread</span><span class="err">对象</span>
+        <span class="no">Class</span><span class="o">&lt;</span><span class="sc">?&gt;</span> <span class="n">activityThreadClass</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">forName</span><span class="p">(</span><span class="s2">"android.app.ActivityThread"</span><span class="p">);</span>
+        <span class="no">Method</span> <span class="n">currentActivityThreadMethod</span> <span class="o">=</span> <span class="n">activityThreadClass</span><span class="p">.</span><span class="nf">getDeclaredMethod</span><span class="p">(</span><span class="s2">"currentActivityThread"</span><span class="p">);</span>
+        <span class="n">currentActivityThreadMethod</span><span class="p">.</span><span class="nf">setAccessible</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+        <span class="no">Object</span> <span class="n">currentActivityThread</span> <span class="o">=</span> <span class="n">currentActivityThreadMethod</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
+
+        <span class="sr">//</span> <span class="err">拿到原始的</span> <span class="n">mInstrumentation</span><span class="err">字段</span>
+        <span class="no">Field</span> <span class="n">mInstrumentationField</span> <span class="o">=</span> <span class="n">activityThreadClass</span><span class="p">.</span><span class="nf">getDeclaredField</span><span class="p">(</span><span class="s2">"mInstrumentation"</span><span class="p">);</span>
+        <span class="n">mInstrumentationField</span><span class="p">.</span><span class="nf">setAccessible</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+        <span class="no">Instrumentation</span> <span class="n">mInstrumentation</span> <span class="o">=</span> <span class="p">(</span><span class="no">Instrumentation</span><span class="p">)</span> <span class="n">mInstrumentationField</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">currentActivityThread</span><span class="p">);</span>
+
+        <span class="sr">//</span> <span class="err">创建代理对象</span>
+        <span class="no">Instrumentation</span> <span class="n">hookInstrumentation</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">HookInstrumentation</span><span class="p">();</span>
+
+        <span class="sr">//</span> <span class="err">偷梁换柱</span>
+        <span class="n">mInstrumentationField</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="n">currentActivityThread</span><span class="p">,</span> <span class="n">hookInstrumentation</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre>
+</div>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">SdkUntil</span> <span class="p">{</span>
+    <span class="kp">public</span> <span class="n">static</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">initLowSDK</span><span class="p">(){</span>
+        <span class="k">if</span><span class="p">(</span><span class="no">InitializeOptimizer</span><span class="p">.</span><span class="nf">isLowSDKInitialized</span><span class="p">()){</span> <span class="sr">//s</span><span class="n">dk</span><span class="err">未初始化</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="no">InitializeOptimizer</span><span class="p">.</span><span class="nf">setLowSDKInitialized</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span><span class="sr">//</span><span class="err">设置标识位为</span><span class="n">true</span><span class="err">并初始化</span>
+        <span class="sr">//</span><span class="err">做一些</span><span class="n">sdk</span><span class="err">初始化的操作</span>
+       <span class="p">}</span>
+       <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">initAsyncSDK</span><span class="p">(){</span>
+        <span class="k">if</span><span class="p">(</span><span class="no">InitializeOptimizer</span><span class="p">.</span><span class="nf">isAsyncSDKInitialized</span><span class="p">()){</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="no">InitializeOptimizer</span><span class="p">.</span><span class="nf">setAsyncSDKInitialized</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+       <span class="sr">//</span><span class="err">同上</span>
+    <span class="p">}</span>
+<span class="p">}</span>      
+</code></pre>
+</div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-03/%E5%86%B7%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, <a href="http://github.com/renyuanz/leonids/">leonids theme</a> made with <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
