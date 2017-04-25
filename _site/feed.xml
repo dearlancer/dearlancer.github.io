@@ -2,72 +2,12 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>我的博客</title>
-    <description>A simple and awesome blog theme powered by jekyll.</description>
+    <description>不为繁华易匠心</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 24 Apr 2017 16:42:21 +0200</pubDate>
-    <lastBuildDate>Mon, 24 Apr 2017 16:42:21 +0200</lastBuildDate>
+    <pubDate>Tue, 25 Apr 2017 03:59:51 +0200</pubDate>
+    <lastBuildDate>Tue, 25 Apr 2017 03:59:51 +0200</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
-    
-      <item>
-        <title>Sample Post</title>
-        <description>&lt;h2 id=&quot;html-elements&quot;&gt;HTML Elements&lt;/h2&gt;
-
-&lt;p&gt;Below is just about everything you’ll need to style in the theme. Check the source code to see the many embedded elements within paragraphs.&lt;/p&gt;
-&lt;h1 id=&quot;heading-1&quot;&gt;Heading 1&lt;/h1&gt;
-
-&lt;h2 id=&quot;heading-2&quot;&gt;Heading 2&lt;/h2&gt;
-
-&lt;h3 id=&quot;heading-3&quot;&gt;Heading 3&lt;/h3&gt;
-
-&lt;h4 id=&quot;heading-4&quot;&gt;Heading 4&lt;/h4&gt;
-
-&lt;h5 id=&quot;heading-5&quot;&gt;Heading 5&lt;/h5&gt;
-
-&lt;h6 id=&quot;heading-6&quot;&gt;Heading 6&lt;/h6&gt;
-&lt;h1 id=&quot;android-webview使用&quot;&gt;android WebView使用&lt;/h1&gt;
-
-&lt;p&gt;webView的方法&lt;/p&gt;
-
-&lt;p&gt;String getUrl() //获取当前页面的url&lt;/p&gt;
-
-&lt;p&gt;reload() //刷新当前页面	
-boolean canGoBack() //是否可以回退	
-boolean canGoForward() 是否可以前进	
-boolean canGoBackOrForward(int steps)  以当前的页面为起始点，用来确认WebView的历史记录是否足以后退或前进给定的步数，正数为前进，负数为后退。	
-goBack(） //回退到上一页	
-goForward() //前进到下一页	
-goBackOrForward(int steps)  //以当前页面为起始点，前进或后退历史记录中指定的步数，正数为前进，负数为后退		
-clearCache(boolean includeDiskFiles)  清空网页访问留下的缓存数据 includeDiskFiles是否清空磁盘数据			
-clearHistory()	//清除当前webview访问的历史记录		
-clearFormData()  //清除自动完成填充的表单数据	
-onPause()   //当页面被失去焦点被切换到后台不可见状态，需要执行onPause操作 结合窗口的生命周期来使用		
-onResume() 	//在先前调用 onPause() 后，我们可以调用该方法来恢复WebView的运行	
-pauseTimers()	//该方法面向全局整个应用程序的webview，它会暂停所有webview的layout，parsing，JavaScript Timer
-resumeTimers()  //恢复pauseTimers时的所有操作 		
-destroy() 	//销毁WebView
-getScrollY()  //返回的当前可见区域的顶端距整个页面顶端的距离，也就是当前内容滚动的距离	
-getHeight()  //返回当前WebView这个容器的高度
-getContentHeight()  //返回整个HTML页面的高度&lt;/p&gt;
-
-&lt;p&gt;if (webView.getContentHeight() * webView.getScale() == (webView.getHeight() + webView.getScrollY())) {
-    //已经处于底端
-}
-if(webView.getScrollY() == 0){
-    //处于顶端
-}&lt;/p&gt;
-
-&lt;p&gt;pageUp(boolean top)   //将WebView展示的页面滑动至顶部	
-pageDown(boolean bottom)   //将WebView展示的页面滑动至底部&lt;/p&gt;
-</description>
-        <pubDate>Mon, 24 Apr 2017 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/articles/2017-04/webview</link>
-        <guid isPermaLink="true">http://localhost:4000/articles/2017-04/webview</guid>
-        
-        
-        <category>hello world</category>
-        
-      </item>
     
       <item>
         <title>WebView</title>

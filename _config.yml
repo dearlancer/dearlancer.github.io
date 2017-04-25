@@ -7,7 +7,9 @@ title: 我的博客
 email: a_starry_night@126.com
 description: 不为繁华易匠心
 url: # the base hostname & protocol for your site
-
+author: 王志成
+paginate: 10
+gems: [jekyll-paginate]
 
 #
 ###################################
@@ -48,7 +50,7 @@ owner:
     ad-client:
     ad-slot:
   bing-verify:
-  github: #username
+  github: dearlancer
   gitlab: #username
   stackoverflow: #123456/username   from a "http://stackoverflow.com/users/123456/username" link
   linkedin: #username
