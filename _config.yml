@@ -9,7 +9,7 @@ description: 不为繁华易匠心
 url: # the base hostname & protocol for your site
 author: 王志成
 paginate: 10
-gems: [jekyll-paginate]
+gems: [Jekyll-paginate]
 
 #
 ###################################
@@ -36,7 +36,7 @@ kramdown:
 #
 owner:
   name: 王志成
-  avatar: leonids-logo.png
+  avatar: favicon.png
   job: "android开发"
   bio: "不为繁华易匠心"
   email: "a_starry_night@126.com"
