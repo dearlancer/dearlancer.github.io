@@ -5,9 +5,162 @@
     <description>不为繁华易匠心</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 28 Apr 2017 04:16:12 +0200</pubDate>
-    <lastBuildDate>Fri, 28 Apr 2017 04:16:12 +0200</lastBuildDate>
+    <pubDate>Sun, 30 Apr 2017 17:26:52 +0200</pubDate>
+    <lastBuildDate>Sun, 30 Apr 2017 17:26:52 +0200</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>使用注解进行更高效地开发</title>
+        <description>&lt;h1 id=&quot;使用andrid注解进行更高效地开发&quot;&gt;使用andrid注解进行更高效地开发&lt;/h1&gt;
+&lt;p&gt;在使用之前，先引入annotations库&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;compile 'com.android.support:support-annotations:{version}'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;空值判断注解&quot;&gt;空值判断注解&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;@Nullable
+使用@Nullable修饰的参数可以取null值&lt;/li&gt;
+  &lt;li&gt;@NonNull
+使用NonNull修饰的参数不能取null值,如果赋予了null值，ide将会警告我们
+举个栗子
+    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;public class Test{
+ private int num;
+ public void setNum(@NonNull int n){
+     this.num=n;
+ }
+}
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;资源类型注解&quot;&gt;资源类型注解&lt;/h2&gt;
+&lt;p&gt;常用的资源类型注解如下&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;@AnyRes
+用来标注一个未知的特殊类型的资源，但是它必须是一个资源类型&lt;/li&gt;
+  &lt;li&gt;@AnimatorRes
+标记类型为android.R.animator资源类型&lt;/li&gt;
+  &lt;li&gt;@AnimRes
+标记类型为android.R.anim资源类型，注意与AnimatorRes的区别，两者的包名不同&lt;/li&gt;
+  &lt;li&gt;@ArrayRes 
+标记类型为android.R.array资源类型&lt;/li&gt;
+  &lt;li&gt;@AttrRes
+标记类型为android.R.attr资源类型&lt;/li&gt;
+  &lt;li&gt;@BoolRes
+记类型为android.R.boolean资源类型&lt;/li&gt;
+  &lt;li&gt;@ColorRes 
+标记类型为android.R.color资源类型&lt;/li&gt;
+  &lt;li&gt;@DimenRes 
+标记类型为android.R.dimen资源类型&lt;/li&gt;
+  &lt;li&gt;@DrawableRes 
+标记类型为android.R.标记类型为android.R.drawable资源类型&lt;/li&gt;
+  &lt;li&gt;@FractionRes 
+标记类型为android.R.fraction资源类型，这个类型比较少见，常见于Animation.xml中，例如30%p,表示占parent的30%&lt;/li&gt;
+  &lt;li&gt;@IdRes 
+标记类型为android.R.id资源类型&lt;/li&gt;
+  &lt;li&gt;@IntegerRes 
+标记类型为android.R.integer资源类型&lt;/li&gt;
+  &lt;li&gt;@InterpolatorRes 
+标记类型为android.R.interpolator资源类型&lt;/li&gt;
+  &lt;li&gt;@LayoutRes 
+标记类型为android.R.layout资源类型&lt;/li&gt;
+  &lt;li&gt;@MenuRes 
+标记类型为android.R.menu资源类型&lt;/li&gt;
+  &lt;li&gt;@PluralsRes 
+标记类型为android.R.plurals资源类型，表示复数字符串类型&lt;/li&gt;
+  &lt;li&gt;@RawRes 
+标记类型为android.R.raw资源类型&lt;/li&gt;
+  &lt;li&gt;@StringRes 
+标记类型为android.R.string资源类型&lt;/li&gt;
+  &lt;li&gt;@StyleRes 
+标记类型为android.R.style资源类型&lt;/li&gt;
+  &lt;li&gt;@StyleableRes 
+标记类型为android.R.transition资源类型&lt;/li&gt;
+  &lt;li&gt;@TransitionRes 
+标记类型为android.R.transition资源类型&lt;/li&gt;
+  &lt;li&gt;@XmlRes
+标记xml类型的文件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;类型定义注解&quot;&gt;类型定义注解&lt;/h2&gt;
+&lt;p&gt;类型定义注册可以让我们自己定义枚举类型并标注相应的参数&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;@IntDef
+定义一组整数型枚举值,假如传入或者返回的值不是枚举中的值的时候，ide将给出提示
+举个栗子：
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IntDefTest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;NO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;vi&quot;&gt;@IntDef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;NO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;YesOrNo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+
+ &lt;span class=&quot;vi&quot;&gt;@YesOrNo&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getResult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;setResult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@YesOrNo&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;@StringDef
+定义一组String类型的枚举值，用法与@IntDef相同
+##权限注解
+如果你的方法的调用需要调用者有特定的权限，你可以使用@RequiresPermission注解
+    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@RequiresPermission(Manifest.permission.SET_WALLPAPER)
+public abstract void setWallpaper(Bitmap bitmap) throws IOException;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;p&gt;如果你至少需要权限集合中的一个，你可以使用anyOf属性：&lt;/p&gt;
+    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@RequiresPermission(anyOf = {
+ Manifest.permission.ACCESS_COARSE_LOCATION,
+ Manifest.permission.ACCESS_FINE_LOCATION})
+public abstract Location getLastKnownLocation(String provider);
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;p&gt;如果你同时需要多个权限，你可以用allOf属性&lt;/p&gt;
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;vi&quot;&gt;@RequiresPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allOf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;READ_HISTORY_BOOKMARKS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WRITE_HISTORY_BOOKMARKS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;updateVisitedHistory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ContentResolver&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;real&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;线程注解&quot;&gt;线程注解&lt;/h2&gt;
+&lt;p&gt;Android中提供了四个与线程相关的注解，他们分别是&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;@UiThread,通常可以等同于主线程,标注方法需要在UIThread执行,比如View类就使用这个注解&lt;/li&gt;
+  &lt;li&gt;@MainThread 主线程,经常启动后创建的第一个线程&lt;/li&gt;
+  &lt;li&gt;@WorkerThread 工作者线程,一般为一些后台的线程,比如AsyncTask里面的doInBackground就是这样的.&lt;/li&gt;
+  &lt;li&gt;@BinderThread 注解方法必须要在BinderThread线程中执行,一般使用较少.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;其他注解&quot;&gt;其他注解&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;@CallSuper 方法重写
+如果你的API允许使用者重写你的方法，但是呢，你又需要你自己的方法(父方法)在重写的时候也被调用，这时候你可以使用@CallSuper标注,拥有这个注解，ide会强制要求调用super方法&lt;/li&gt;
+  &lt;li&gt;@CheckResult 检测返回值
+如果你的方法返回一个值，你期望调用者用这个值做些事情，那么你可以使用@CheckResult注解标注这个方法。&lt;br /&gt;
+Android中，Context#checkPermission这个方法已经被@CheckResult标注了:
+    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@(suggest=&quot;#enforcePermission(String,int,int,String)&quot;)
+public abstract int checkPermission(@NonNull String permission, int pid, int uid)
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;p&gt;这是非常重要的，因为有些使用context.checkPermission的开发者认为他们已经执行了一个权限 —但其实这个方法仅仅只做了检查并且反馈一个是否成功的值而已。如果开发者使用了这个方法，但是又不用其返回值，那么这个开发者真正想调用的可能是这个Context#enforcePermission方法，而不是checkPermission。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+</description>
+        <pubDate>Sun, 30 Apr 2017 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91</guid>
+        
+        
+        <category>android</category>
+        
+      </item>
     
       <item>
         <title>WebView开车指南</title>

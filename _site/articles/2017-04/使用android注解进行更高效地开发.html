@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>使用注解进行更高效地开发</title>
+  <meta name="description" content="Support Annotation Library是在Android Support Library19.1版本开始引入的一个全新的函数包，它包含了诸多有用的元注解。用来帮助开发者在编译期间发现可能存在的bug。Support Library本身也使用Annotations Library提供的注解来完善Lib...">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="使用注解进行更高效地开发">使用注解进行更高效地开发</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        30 APR 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="使用andrid注解进行更高效地开发">使用andrid注解进行更高效地开发</h1>
+<p>在使用之前，先引入annotations库</p>
+<pre><code class="language-Ruby">compile 'com.android.support:support-annotations:{version}'
+</code></pre>
+<h2 id="空值判断注解">空值判断注解</h2>
+<ol>
+  <li>@Nullable
+使用@Nullable修饰的参数可以取null值</li>
+  <li>@NonNull
+使用NonNull修饰的参数不能取null值,如果赋予了null值，ide将会警告我们
+举个栗子
+    <pre><code class="language-Ruby">public class Test{
+ private int num;
+ public void setNum(@NonNull int n){
+     this.num=n;
+ }
+}
+</code></pre>
+  </li>
+</ol>
+
+<h2 id="资源类型注解">资源类型注解</h2>
+<p>常用的资源类型注解如下</p>
+<ol>
+  <li>@AnyRes
+用来标注一个未知的特殊类型的资源，但是它必须是一个资源类型</li>
+  <li>@AnimatorRes
+标记类型为android.R.animator资源类型</li>
+  <li>@AnimRes
+标记类型为android.R.anim资源类型，注意与AnimatorRes的区别，两者的包名不同</li>
+  <li>@ArrayRes 
+标记类型为android.R.array资源类型</li>
+  <li>@AttrRes
+标记类型为android.R.attr资源类型</li>
+  <li>@BoolRes
+记类型为android.R.boolean资源类型</li>
+  <li>@ColorRes 
+标记类型为android.R.color资源类型</li>
+  <li>@DimenRes 
+标记类型为android.R.dimen资源类型</li>
+  <li>@DrawableRes 
+标记类型为android.R.标记类型为android.R.drawable资源类型</li>
+  <li>@FractionRes 
+标记类型为android.R.fraction资源类型，这个类型比较少见，常见于Animation.xml中，例如30%p,表示占parent的30%</li>
+  <li>@IdRes 
+标记类型为android.R.id资源类型</li>
+  <li>@IntegerRes 
+标记类型为android.R.integer资源类型</li>
+  <li>@InterpolatorRes 
+标记类型为android.R.interpolator资源类型</li>
+  <li>@LayoutRes 
+标记类型为android.R.layout资源类型</li>
+  <li>@MenuRes 
+标记类型为android.R.menu资源类型</li>
+  <li>@PluralsRes 
+标记类型为android.R.plurals资源类型，表示复数字符串类型</li>
+  <li>@RawRes 
+标记类型为android.R.raw资源类型</li>
+  <li>@StringRes 
+标记类型为android.R.string资源类型</li>
+  <li>@StyleRes 
+标记类型为android.R.style资源类型</li>
+  <li>@StyleableRes 
+标记类型为android.R.transition资源类型</li>
+  <li>@TransitionRes 
+标记类型为android.R.transition资源类型</li>
+  <li>@XmlRes
+标记xml类型的文件</li>
+</ol>
+
+<h2 id="类型定义注解">类型定义注解</h2>
+<p>类型定义注册可以让我们自己定义枚举类型并标注相应的参数</p>
+<ol>
+  <li>@IntDef
+定义一组整数型枚举值,假如传入或者返回的值不是枚举中的值的时候，ide将给出提示
+举个栗子：
+    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">IntDefTest</span><span class="p">{</span>
+ <span class="kp">private</span> <span class="n">int</span> <span class="n">result</span><span class="p">;</span>
+ <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">NO</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+ <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">YES</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+ <span class="vi">@IntDef</span><span class="p">{</span><span class="no">NO</span><span class="p">,</span><span class="no">YES</span><span class="p">}</span>
+ <span class="kp">public</span> <span class="vi">@interface</span> <span class="no">YesOrNo</span><span class="p">{}</span>
+
+ <span class="vi">@YesOrNo</span>
+ <span class="kp">public</span> <span class="n">int</span> <span class="n">getResult</span><span class="p">(){</span>
+     <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+ <span class="p">}</span>
+
+ <span class="kp">public</span> <span class="n">void</span> <span class="n">setResult</span><span class="p">(</span><span class="vi">@YesOrNo</span> <span class="n">int</span> <span class="n">r</span><span class="p">){</span>
+     <span class="n">this</span><span class="p">.</span><span class="nf">result</span><span class="o">=</span><span class="n">r</span><span class="p">;</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+    </div>
+  </li>
+  <li>@StringDef
+定义一组String类型的枚举值，用法与@IntDef相同
+##权限注解
+如果你的方法的调用需要调用者有特定的权限，你可以使用@RequiresPermission注解
+    <pre><code class="language-Ruby">@RequiresPermission(Manifest.permission.SET_WALLPAPER)
+public abstract void setWallpaper(Bitmap bitmap) throws IOException;
+</code></pre>
+    <p>如果你至少需要权限集合中的一个，你可以使用anyOf属性：</p>
+    <pre><code class="language-Ruby">@RequiresPermission(anyOf = {
+ Manifest.permission.ACCESS_COARSE_LOCATION,
+ Manifest.permission.ACCESS_FINE_LOCATION})
+public abstract Location getLastKnownLocation(String provider);
+</code></pre>
+    <p>如果你同时需要多个权限，你可以用allOf属性</p>
+    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="n">allOf</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">READ_HISTORY_BOOKMARKS</span><span class="p">,</span>
+ <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">WRITE_HISTORY_BOOKMARKS</span><span class="p">})</span>
+<span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">void</span> <span class="n">updateVisitedHistory</span><span class="p">(</span><span class="no">ContentResolver</span> <span class="n">cr</span><span class="p">,</span> <span class="no">String</span> <span class="n">url</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">real</span><span class="p">);</span>
+</code></pre>
+    </div>
+  </li>
+</ol>
+
+<h2 id="线程注解">线程注解</h2>
+<p>Android中提供了四个与线程相关的注解，他们分别是</p>
+<ol>
+  <li>@UiThread,通常可以等同于主线程,标注方法需要在UIThread执行,比如View类就使用这个注解</li>
+  <li>@MainThread 主线程,经常启动后创建的第一个线程</li>
+  <li>@WorkerThread 工作者线程,一般为一些后台的线程,比如AsyncTask里面的doInBackground就是这样的.</li>
+  <li>@BinderThread 注解方法必须要在BinderThread线程中执行,一般使用较少.</li>
+</ol>
+
+<h2 id="其他注解">其他注解</h2>
+<ol>
+  <li>@CallSuper 方法重写
+如果你的API允许使用者重写你的方法，但是呢，你又需要你自己的方法(父方法)在重写的时候也被调用，这时候你可以使用@CallSuper标注,拥有这个注解，ide会强制要求调用super方法</li>
+  <li>@CheckResult 检测返回值
+如果你的方法返回一个值，你期望调用者用这个值做些事情，那么你可以使用@CheckResult注解标注这个方法。<br />
+Android中，Context#checkPermission这个方法已经被@CheckResult标注了:
+    <pre><code class="language-Ruby">@(suggest="#enforcePermission(String,int,int,String)")
+public abstract int checkPermission(@NonNull String permission, int pid, int uid)
+</code></pre>
+    <p>这是非常重要的，因为有些使用context.checkPermission的开发者认为他们已经执行了一个权限 —但其实这个方法仅仅只做了检查并且反馈一个是否成功的值而已。如果开发者使用了这个方法，但是又不用其返回值，那么这个开发者真正想调用的可能是这个Context#enforcePermission方法，而不是checkPermission。</p>
+  </li>
+</ol>
+
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-04/%E4%BD%BF%E7%94%A8android%E6%B3%A8%E8%A7%A3%E8%BF%9B%E8%A1%8C%E6%9B%B4%E9%AB%98%E6%95%88%E5%9C%B0%E5%BC%80%E5%8F%91" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
