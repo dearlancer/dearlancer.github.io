@@ -5,16 +5,17 @@
     <description>不为繁华易匠心</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 04 May 2017 08:51:29 +0200</pubDate>
-    <lastBuildDate>Thu, 04 May 2017 08:51:29 +0200</lastBuildDate>
+    <pubDate>Thu, 04 May 2017 09:18:06 +0200</pubDate>
+    <lastBuildDate>Thu, 04 May 2017 09:18:06 +0200</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
         <title>使用注解进行更高效地开发</title>
         <description>&lt;h1 id=&quot;使用andrid注解进行更高效地开发&quot;&gt;使用andrid注解进行更高效地开发&lt;/h1&gt;
 &lt;p&gt;在使用之前，先引入annotations库&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;compile 'com.android.support:support-annotations:{version}'
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;compile&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'com.android.support:support-annotations:{version}'&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 &lt;h2 id=&quot;空值判断注解&quot;&gt;空值判断注解&lt;/h2&gt;
 &lt;ol&gt;
   &lt;li&gt;@Nullable
@@ -22,65 +23,44 @@
   &lt;li&gt;@NonNull
 使用NonNull修饰的参数不能取null值,如果赋予了null值，ide将会警告我们
 举个栗子
-    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;public class Test{
- private int num;
- public void setNum(@NonNull int n){
-     this.num=n;
- }
-}
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;setNum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@NonNull&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h2 id=&quot;资源类型注解&quot;&gt;资源类型注解&lt;/h2&gt;
 &lt;p&gt;常用的资源类型注解如下&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;@AnyRes
-用来标注一个未知的特殊类型的资源，但是它必须是一个资源类型&lt;/li&gt;
-  &lt;li&gt;@AnimatorRes
-标记类型为android.R.animator资源类型&lt;/li&gt;
-  &lt;li&gt;@AnimRes
-标记类型为android.R.anim资源类型，注意与AnimatorRes的区别，两者的包名不同&lt;/li&gt;
-  &lt;li&gt;@ArrayRes 
-标记类型为android.R.array资源类型&lt;/li&gt;
-  &lt;li&gt;@AttrRes
-标记类型为android.R.attr资源类型&lt;/li&gt;
-  &lt;li&gt;@BoolRes
-记类型为android.R.boolean资源类型&lt;/li&gt;
-  &lt;li&gt;@ColorRes 
-标记类型为android.R.color资源类型&lt;/li&gt;
-  &lt;li&gt;@DimenRes 
-标记类型为android.R.dimen资源类型&lt;/li&gt;
-  &lt;li&gt;@DrawableRes 
-标记类型为android.R.标记类型为android.R.drawable资源类型&lt;/li&gt;
-  &lt;li&gt;@FractionRes 
-标记类型为android.R.fraction资源类型，这个类型比较少见，常见于Animation.xml中，例如30%p,表示占parent的30%&lt;/li&gt;
-  &lt;li&gt;@IdRes 
-标记类型为android.R.id资源类型&lt;/li&gt;
-  &lt;li&gt;@IntegerRes 
-标记类型为android.R.integer资源类型&lt;/li&gt;
-  &lt;li&gt;@InterpolatorRes 
-标记类型为android.R.interpolator资源类型&lt;/li&gt;
-  &lt;li&gt;@LayoutRes 
-标记类型为android.R.layout资源类型&lt;/li&gt;
-  &lt;li&gt;@MenuRes 
-标记类型为android.R.menu资源类型&lt;/li&gt;
-  &lt;li&gt;@PluralsRes 
-标记类型为android.R.plurals资源类型，表示复数字符串类型&lt;/li&gt;
-  &lt;li&gt;@RawRes 
-标记类型为android.R.raw资源类型&lt;/li&gt;
-  &lt;li&gt;@StringRes 
-标记类型为android.R.string资源类型&lt;/li&gt;
-  &lt;li&gt;@StyleRes 
-标记类型为android.R.style资源类型&lt;/li&gt;
-  &lt;li&gt;@StyleableRes 
-标记类型为android.R.transition资源类型&lt;/li&gt;
-  &lt;li&gt;@TransitionRes 
-标记类型为android.R.transition资源类型&lt;/li&gt;
-  &lt;li&gt;@XmlRes
-标记xml类型的文件&lt;/li&gt;
-&lt;/ol&gt;
-
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;注解&lt;/th&gt; &lt;th&gt;功能&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;AnyRes&lt;/th&gt;&lt;th&gt;用来标注一个未知的特殊类型的资源，但是它必须是一个资源类型&lt;/th&gt; &lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@AnimatorRes&lt;/th&gt;&lt;th&gt;标记类型为android.R.animator资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@AnimRes&lt;/th&gt;&lt;th&gt;标记类型为android.R.anim资源类型，注意与AnimatorRes的区别，两者的包名不同&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@ArrayRes&lt;/th&gt; &lt;th&gt;标记类型为android.R.array资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@AttrRes&lt;/th&gt;&lt;th&gt;标记类型为android.R.attr资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@BoolRes&lt;/th&gt;&lt;th&gt;记类型为android.R.boolean资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@ColorRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.color资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@DimenRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.dimen资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@DrawableRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.标记类型为android.R.drawable资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@FractionRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.fraction资源类型，这个类型比较少见，常见于Animation.xml中，例如30%p,表示占parent的30%&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt; @IdRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.id资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@IntegerRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.integer资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@InterpolatorRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.interpolator资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@LayoutRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.layout资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt; @MenuRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.menu资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@PluralsRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.plurals资源类型，表示复数字符串类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@RawRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.raw资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@StringRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.string资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@StyleRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.style资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@StyleableRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.transition资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@TransitionRes &lt;/th&gt;&lt;th&gt;标记类型为android.R.transition资源类型&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;@XmlRes&lt;/th&gt;&lt;th&gt;标记xml类型的文件&lt;/th&gt;&lt;/tr&gt;
+&lt;/table&gt;
 &lt;h2 id=&quot;类型定义注解&quot;&gt;类型定义注解&lt;/h2&gt;
 &lt;p&gt;类型定义注册可以让我们自己定义枚举类型并标注相应的参数&lt;/p&gt;
 &lt;ol&gt;
@@ -110,15 +90,17 @@
 定义一组String类型的枚举值，用法与@IntDef相同
 ##权限注解
 如果你的方法的调用需要调用者有特定的权限，你可以使用@RequiresPermission注解
-    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@RequiresPermission(Manifest.permission.SET_WALLPAPER)
-public abstract void setWallpaper(Bitmap bitmap) throws IOException;
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;vi&quot;&gt;@RequiresPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SET_WALLPAPER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;setWallpaper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Bitmap&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bitmap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;IOException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
     &lt;p&gt;如果你至少需要权限集合中的一个，你可以使用anyOf属性：&lt;/p&gt;
-    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@RequiresPermission(anyOf = {
- Manifest.permission.ACCESS_COARSE_LOCATION,
- Manifest.permission.ACCESS_FINE_LOCATION})
-public abstract Location getLastKnownLocation(String provider);
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;vi&quot;&gt;@RequiresPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;anyOf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ACCESS_COARSE_LOCATION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+ &lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ACCESS_FINE_LOCATION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Location&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getLastKnownLocation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
     &lt;p&gt;如果你同时需要多个权限，你可以用allOf属性&lt;/p&gt;
     &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;vi&quot;&gt;@RequiresPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;allOf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
  &lt;span class=&quot;no&quot;&gt;Manifest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;READ_HISTORY_BOOKMARKS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -145,9 +127,10 @@ public abstract Location getLastKnownLocation(String provider);
   &lt;li&gt;@CheckResult 检测返回值
 如果你的方法返回一个值，你期望调用者用这个值做些事情，那么你可以使用@CheckResult注解标注这个方法。&lt;br /&gt;
 Android中，Context#checkPermission这个方法已经被@CheckResult标注了:
-    &lt;pre&gt;&lt;code class=&quot;language-Ruby&quot;&gt;@(suggest=&quot;#enforcePermission(String,int,int,String)&quot;)
-public abstract int checkPermission(@NonNull String permission, int pid, int uid)
+    &lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;suggest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;#enforcePermission(String,int,int,String)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;abstract&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;checkPermission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@NonNull&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;permission&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
     &lt;p&gt;这是非常重要的，因为有些使用context.checkPermission的开发者认为他们已经执行了一个权限 —但其实这个方法仅仅只做了检查并且反馈一个是否成功的值而已。如果开发者使用了这个方法，但是又不用其返回值，那么这个开发者真正想调用的可能是这个Context#enforcePermission方法，而不是checkPermission。&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
