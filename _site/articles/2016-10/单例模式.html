@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>设计模式之单例模式</title>
+  <meta name="description" content="关键点： 构造函数不对外开放，一般为private 通过一个静态方法或枚举对象返回单例类对象 确保单例类的对象只有一个，尤其在多线程模式下 确保单例类在反序列化时不会重新构造对象 必须保证线程安全">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="设计模式之单例模式">设计模式之单例模式</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        20 OCT 2016
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="单例模式">单例模式</h1>
+<p>关键点：
+构造函数不对外开放，一般为private
+通过一个静态方法或枚举对象返回单例类对象
+确保单例类的对象只有一个，尤其在多线程模式下
+确保单例类在反序列化时不会重新构造对象
+必须保证线程安全
+应用场景：
+类 占用资源过多不宜创建多个实例，比如IO操作和数据库访问等</p>
+<h2 id="饿汉模式">饿汉模式</h2>
+<p>在类首次加载到内存的时候就被初始化,不管是否使用都会初始化</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+     <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+
+     <span class="kp">public</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">getInstance</span><span class="p">(){</span>
+          <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<h2 id="懒汉模式">懒汉模式</h2>
+<p>首次使用时被初始化,每次调用都会进行同步,会消耗不必要的资源,造成不必要的同步开销</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+     <span class="kp">private</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">instance</span><span class="o">=</span><span class="n">null</span><span class="p">;</span>
+     <span class="kp">public</span> <span class="n">static</span> <span class="n">synchronized</span>  <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">instance</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
+           <span class="n">instance</span><span class="o">=</span><span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+          <span class="p">}</span>
+               <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<h2 id="double-check-lockdcl推荐使用">Double Check Lock(DCL)（推荐使用）</h2>
+<p>优点：资源利用率高,效率高 缺点：高并发的环境下小概率发生，第一次加载略慢，jdk1.5版本一下无法确保顺序</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+     <span class="kp">private</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">instance</span><span class="o">=</span><span class="n">null</span><span class="p">;</span>
+     <span class="kp">public</span> <span class="n">ststic</span> <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">instance</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
+            <span class="n">synchronized</span> <span class="p">(</span> <span class="no">Singleton</span> <span class="p">.</span><span class="nf">class</span><span class="p">){</span>
+              <span class="k">if</span><span class="p">(</span> <span class="n">instance</span><span class="o">==</span><span class="n">null</span> <span class="p">)</span><span class="n">instance</span><span class="o">=</span><span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+             <span class="p">}</span>
+          <span class="p">}</span>
+       <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<h2 id="静态内部类单例模式推荐使用">静态内部类单例模式(推荐使用)</h2>
+<p>适用场景，构造函数无参数</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+      <span class="kp">public</span> <span class="n">ststic</span> <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span> <span class="sr">//</span><span class="err">第一次调用</span> <span class="no">Singleton</span><span class="err">类时不会加载，只有在</span> <span class="n">getInstance</span><span class="err">调用时才会初始化，线程安全，同时延迟了单例的实例化</span>
+      <span class="k">return</span>  <span class="no">SingletonHolder</span><span class="p">.</span><span class="nf">instance</span><span class="p">;</span>
+     <span class="p">}</span>
+     <span class="kp">private</span> <span class="n">static</span> <span class="k">class</span>  <span class="nc">SingletonHolder</span><span class="p">{</span><span class="sr">//</span><span class="err">静态内部类</span>
+      <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
