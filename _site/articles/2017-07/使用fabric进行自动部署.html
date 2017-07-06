@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>使用Fabric来部署代码!</title>
+  <meta name="description" content="Fabric是一个Python库，用于简化使用SSH的应用程序部署或系统管理任务。通过它我们可以执行本地以及服务器的shell命令，上传，下载文件，以及其他的一些功能。">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="使用Fabric来部署代码!">使用Fabric来部署代码!</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        4 JUL 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <p>Fabric是一个Python库，用于简化使用SSH的应用程序部署或系统管理任务。通过它我们可以执行本地以及服务器的shell命令，上传，下载文件，以及其他的一些功能。			
+对于重复性大的工作，可以通过Fabric来部署代码，实现一劳永逸。</p>
+<h2 id="安装fabric">安装Fabric</h2>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="n">fabric</span>
+</code></pre>
+</div>
+<p>或者</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">fabric</span>
+</code></pre>
+</div>
+<p>安装完成后,可以在shell中通过命令查看是否安装成功</p>
+
+<p><img src="img/which_fab.png" alt="which_fab" /></p>
+<h2 id="使用">使用</h2>
+<p>常用命令行</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="err">命令行常用：</span> <span class="n">fab</span> <span class="o">--</span><span class="n">help</span>
+<span class="n">fab</span> <span class="o">-</span><span class="n">l</span>             <span class="o">--</span> <span class="err">显示可用的</span><span class="n">task</span><span class="err">（命令）</span>
+<span class="n">fab</span> <span class="o">-</span><span class="no">H</span>             <span class="o">--</span> <span class="err">指定</span><span class="n">host</span><span class="err">，支持多</span><span class="n">host</span><span class="err">逗号分开</span>
+<span class="n">fab</span> <span class="o">-</span><span class="no">R</span>             <span class="o">--</span> <span class="err">指定</span><span class="n">role</span><span class="err">，支持多个</span>
+<span class="n">fab</span> <span class="o">-</span><span class="no">P</span>             <span class="o">--</span> <span class="err">并发数，默认是串行</span>
+<span class="n">fab</span> <span class="o">-</span><span class="n">w</span>             <span class="o">--</span> <span class="n">warn_only</span><span class="err">，默认是碰到异常直接</span><span class="n">abort</span><span class="err">退出</span>
+<span class="n">fab</span> <span class="o">-</span><span class="n">f</span>             <span class="o">--</span> <span class="err">指定入口文件，</span><span class="n">fab</span><span class="err">默认入口文件是：</span><span class="n">fabfile</span><span class="o">/</span><span class="n">fabfile</span><span class="p">.</span><span class="nf">py</span>
+</code></pre>
+</div>
+<p>在你需要运行的文件夹下新建一个fabfile.py文件 	
+然后就是正常的脚本编写了		
+栗子：</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hi</span><span class="p">():</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">"hi girl!"</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>在shell中运行命令,就能看到输出了。</p>
+
+<p><img src="img/hi.png" alt="which_fab" />
+带参数的函数</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"%s = %s!"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+<span class="sr">//</span><span class="err">在</span><span class="n">shell</span><span class="err">中调用</span>
+<span class="n">fab</span> <span class="n">hello</span><span class="ss">:name</span><span class="p">,</span><span class="n">value</span>    
+</code></pre>
+</div>
+<h2 id="基本命令使用">基本命令使用</h2>
+<p>导入包函数</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="o">*</span>
+</code></pre>
+</div>
+<h3 id="lcddir">lcd(dir)</h3>
+<p>执行本地的切换命令		
+相当于在本地执行 cd dir</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">lcd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
+</code></pre>
+</div>
+<h3 id="cddir">cd(dir)</h3>
+<p>执行远程切换命令		
+相当于在服务器执行cd dir</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
+</code></pre>
+</div>
+<h3 id="localexe">local（exe）</h3>
+<p>执行本地命令语句，后跟命令语句</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">local</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span> <span class="o">/</span><span class="sr">/显示本地当前文件夹下所有文件
+</span></code></pre>
+</div>
+<h3 id="runexe">run(exe)</h3>
+<p>与local相对，执行服务器命令语句</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">run</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span>
+</code></pre>
+</div>
+<h3 id="with">with</h3>
+<p>执行多步命令</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp'</span><span class="p">)</span>
+	<span class="n">run</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">)</span>
+</code></pre>
+</div>
+<h3 id="在指定的host上运行">在指定的host上运行</h3>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">env</span>
+
+<span class="n">env</span><span class="p">.</span><span class="nf">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'host1'</span><span class="p">,</span> <span class="s1">'host2'</span><span class="p">]</span>
+<span class="n">env</span><span class="p">.</span><span class="nf">passwords</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'host1'</span><span class="p">:</span> <span class="s2">"pwdofhost1"</span><span class="p">,</span>
+    <span class="s1">'host2'</span><span class="p">:</span> <span class="s2">"pwdofhost2"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">def</span> <span class="nf">taskA</span><span class="p">():</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>对多个host指派不同的任务</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span>
+
+<span class="n">env</span><span class="p">.</span><span class="nf">roledefs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'db'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'db1'</span><span class="p">,</span> <span class="s1">'db2'</span><span class="p">],</span>
+    <span class="s1">'web'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'web1'</span><span class="p">,</span> <span class="s1">'web2'</span><span class="p">,</span> <span class="s1">'web3'</span><span class="p">],</span>
+<span class="p">}</span>
+<span class="sr">//mi</span><span class="n">grate</span><span class="err">将会运行在</span><span class="n">db1</span><span class="err">，</span><span class="n">db2</span><span class="err">两个服务器上</span>
+<span class="vi">@roles</span><span class="p">(</span><span class="s1">'db'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>
+    <span class="c1"># Database stuff here.</span>
+    <span class="n">pass</span>
+
+<span class="sr">//u</span><span class="n">pdate</span><span class="err">将会运行在</span><span class="n">web1</span><span class="err">，</span><span class="n">web2</span><span class="err">，</span><span class="n">web3</span><span class="err">服务器上</span>
+<span class="vi">@roles</span><span class="p">(</span><span class="s1">'web'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
+    <span class="c1"># Code updates here.</span>
+    <span class="n">pass</span>
+</code></pre>
+</div>
+<h2 id="注解">注解</h2>
+<p>@task
+在函数顶部使用这个注解后，fab –list命令便可以看到可执行函数</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@task</span>
+<span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>
+    <span class="n">pass</span>
+<span class="vi">@task</span>
+<span class="k">def</span> <span class="nf">push</span><span class="p">():</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s1">'push'</span><span class="p">)</span>
+<span class="vi">@task</span>
+<span class="k">def</span> <span class="nf">provision</span><span class="p">():</span>
+    <span class="n">pass</span>
+</code></pre>
+</div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-07/%E4%BD%BF%E7%94%A8fabric%E8%BF%9B%E8%A1%8C%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
