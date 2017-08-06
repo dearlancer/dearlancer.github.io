@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>自定义Dialog</title>
+  <meta name="description" content="“”">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+       
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="自定义Dialog">自定义Dialog</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        1 AUG 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="dialog代码使用builder模式构建">Dialog代码,使用Builder模式构建</h2>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">XxDialog</span> <span class="n">extends</span> <span class="no">Dialog</span> <span class="p">{</span>
+    <span class="kp">private</span> <span class="no">Context</span> <span class="n">mContext</span><span class="p">;</span>
+    <span class="kp">private</span> <span class="no">String</span> <span class="n">mTitle</span><span class="p">;</span>
+    <span class="kp">private</span> <span class="no">String</span> <span class="n">mContent</span><span class="p">;</span>
+
+    <span class="kp">protected</span> <span class="no">XxDialog</span><span class="p">(</span><span class="no">Context</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="no">R</span><span class="p">.</span><span class="nf">style</span><span class="p">.</span><span class="nf">marketdialog</span><span class="p">);</span>
+        <span class="n">this</span><span class="p">.</span><span class="nf">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kp">public</span> <span class="n">void</span> <span class="n">setmTitle</span><span class="p">(</span><span class="no">String</span> <span class="n">mTitle</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="p">.</span><span class="nf">mTitle</span> <span class="o">=</span> <span class="n">mTitle</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="kp">public</span> <span class="n">void</span> <span class="n">setmContent</span><span class="p">(</span><span class="no">String</span> <span class="n">mContent</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">this</span><span class="p">.</span><span class="nf">mContent</span> <span class="o">=</span> <span class="n">mContent</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="vi">@Override</span>
+    <span class="kp">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="no">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">super</span><span class="p">.</span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+        <span class="n">setContentView</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">layout</span><span class="p">.</span><span class="nf">dialog_layout</span><span class="p">);</span>
+        <span class="n">getWindow</span><span class="p">().</span><span class="nf">setGravity</span><span class="p">(</span><span class="no">Gravity</span><span class="o">.</span><span class="no">CENTER</span><span class="p">);</span>   <span class="sr">//</span><span class="err">设置</span><span class="n">dialog</span><span class="err">位置</span>
+        <span class="no">WindowManager</span><span class="o">.</span><span class="no">LayoutParams</span> <span class="n">layoutParams</span> <span class="o">=</span> <span class="n">getWindow</span><span class="p">().</span><span class="nf">getAttributes</span><span class="p">();</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="nf">width</span> <span class="o">=</span> <span class="no">WindowManager</span><span class="o">.</span><span class="no">LayoutParams</span><span class="o">.</span><span class="no">WRAP_CONTENT</span><span class="p">;</span>
+        <span class="n">layoutParams</span><span class="p">.</span><span class="nf">height</span> <span class="o">=</span> <span class="no">WindowManager</span><span class="o">.</span><span class="no">LayoutParams</span><span class="o">.</span><span class="no">WRAP_CONTENT</span><span class="p">;</span>
+        <span class="n">getWindow</span><span class="p">().</span><span class="nf">setAttributes</span><span class="p">(</span><span class="n">layoutParams</span><span class="p">);</span>
+        <span class="n">setupView</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="kp">public</span> <span class="n">static</span> <span class="k">class</span> <span class="nc">Build</span> <span class="p">{</span>
+            <span class="kp">private</span> <span class="no">Context</span> <span class="n">mContext</span><span class="p">;</span>
+            <span class="kp">private</span> <span class="no">String</span> <span class="n">mTitle</span><span class="p">;</span>
+            <span class="kp">private</span> <span class="no">String</span> <span class="n">mContent</span><span class="p">;</span>
+            <span class="kp">public</span> <span class="no">Build</span><span class="p">(</span><span class="n">final</span> <span class="no">Context</span> <span class="n">mContext</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">this</span><span class="p">.</span><span class="nf">mContext</span> <span class="o">=</span> <span class="n">mContext</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kp">public</span> <span class="no">Build</span> <span class="n">setmContent</span><span class="p">(</span><span class="no">String</span> <span class="n">mContent</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">this</span><span class="p">.</span><span class="nf">mContent</span> <span class="o">=</span> <span class="n">mContent</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kp">public</span> <span class="no">Build</span> <span class="n">setmTitle</span><span class="p">(</span><span class="no">String</span> <span class="n">mTitle</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">this</span><span class="p">.</span><span class="nf">mTitle</span> <span class="o">=</span> <span class="n">mTitle</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kp">public</span> <span class="n">void</span> <span class="n">setImgId</span><span class="p">(</span><span class="vi">@DrawableRes</span> <span class="n">int</span> <span class="n">imgId</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">this</span><span class="p">.</span><span class="nf">imgId</span> <span class="o">=</span> <span class="n">imgId</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kp">private</span> <span class="no">XxDialog</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
+            <span class="no">XxDialog</span> <span class="n">dialog</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">XxDialog</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
+            <span class="n">dialog</span><span class="p">.</span><span class="nf">setmTitle</span><span class="p">(</span><span class="n">mTitle</span> <span class="o">!=</span> <span class="n">null</span> <span class="p">?</span> <span class="n">mTitle</span> <span class="p">:</span> <span class="n">mContext</span><span class="p">.</span><span class="nf">getResources</span><span class="p">().</span><span class="nf">getString</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">string</span><span class="p">.</span><span class="nf">dialog_title</span><span class="p">));</span>
+            <span class="n">dialog</span><span class="p">.</span><span class="nf">setImgId</span><span class="p">(</span><span class="n">imgId</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">?</span> <span class="n">imgId</span> <span class="p">:</span> <span class="no">R</span><span class="p">.</span><span class="nf">drawable</span><span class="p">.</span><span class="nf">dialog_icon</span><span class="p">);</span>
+            <span class="n">dialog</span><span class="p">.</span><span class="nf">setmContent</span><span class="p">(</span><span class="n">mContent</span> <span class="o">!=</span> <span class="n">null</span> <span class="p">?</span> <span class="n">mContent</span> <span class="p">:</span> <span class="n">mContext</span><span class="p">.</span><span class="nf">getResources</span><span class="p">().</span><span class="nf">getString</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">string</span><span class="p">.</span><span class="nf">dialog_content</span><span class="p">));</span>
+            <span class="k">return</span> <span class="n">dialog</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kp">public</span> <span class="no">XxDialog</span> <span class="n">show</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">final</span> <span class="no">XxDialog</span> <span class="n">dialog</span> <span class="o">=</span> <span class="n">create</span><span class="p">();</span>
+            <span class="n">dialog</span><span class="p">.</span><span class="nf">show</span><span class="p">();</span>
+            <span class="k">return</span> <span class="n">dialog</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h2 id="dialog主题属性">Dialog主题属性</h2>
+<p>1.设置Dialog标题,true:显示,false:不显示</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowNoTitle"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>2.设置对话框的背景颜色</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:background"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">white</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>3.设置点击dialog以外的区域，dialog是否消失 true:消失,false:不消失</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowCloseOnTouchOutside"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>4.是否允许对话框的背景变暗 true:变暗 false:不改变</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimEnabled"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>5.对话框的背景变暗的程度，值越大越暗</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimAmount"</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>6.dialog的动画效果</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowAnimationStyle"</span><span class="o">&gt;</span><span class="vi">@style</span><span class="o">/</span><span class="n">animation</span><span class="o">&lt;</span><span class="sr">/item&gt;
+进入/</span><span class="err">退出动画</span> 
+<span class="o">&lt;</span><span class="n">style</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"animation"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"windowEnterAnimation"</span><span class="o">&gt;</span><span class="vi">@anim</span><span class="o">/</span><span class="n">dialog_enter</span><span class="o">&lt;</span><span class="sr">/item&gt;
+    &lt;item name="windowExitAnimation"&gt;@anim/</span><span class="n">dialog_exit</span><span class="o">&lt;</span><span class="sr">/item&gt;
+&lt;/s</span><span class="n">tyle</span><span class="o">&gt;</span>
+</code></pre>
+</div>
+<p>7.设置dialog的背景颜色</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowBackground"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>8.Dialog的windowFrame框<br />
+值为null时，Dialog边框显示为透明</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowFrame"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+<p>9.是否悬浮在activity上</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowIsFloating"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre>
+</div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-08/android-%E8%87%AA%E5%AE%9A%E4%B9%89Dialog" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
