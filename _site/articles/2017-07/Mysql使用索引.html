@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Mysql之使用索引</title>
+  <meta name="description" content="“索引的作用相当于图书的目录，可以根据目录中的页码快速找到所需的内容。它是一种以空间换时间的典型用法，它把数据查询的结构以B+树的形式存储在本地,虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存一下索引文件。”">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Mysql之使用索引">Mysql之使用索引</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        7 JUL 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="索引">索引</h2>
+<p>索引的作用相当于图书的目录，可以根据目录中的页码快速找到所需的内容。它是一种以空间换时间的典型用法，它把数据查询的结构以B+树的形式存储在本地,虽然索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存一下索引文件。</p>
+
+<h2 id="索引类别">索引类别</h2>
+<h3 id="普通索引">普通索引</h3>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span><span class="err">最基本的索引，它没有任何限制</span>
+<span class="no">CREATE</span> <span class="no">INDEX</span> <span class="n">indexName</span> <span class="no">ON</span> <span class="n">mytable</span><span class="p">(</span><span class="n">username</span><span class="p">(</span><span class="n">length</span><span class="p">));</span>     <span class="sr">//</span><span class="err">创建</span>
+<span class="no">ALTER</span> <span class="n">mytable</span> <span class="no">ADD</span> <span class="no">INDEX</span> <span class="p">[</span><span class="n">indexName</span><span class="p">]</span> <span class="no">ON</span> <span class="p">(</span><span class="n">username</span><span class="p">(</span><span class="n">length</span><span class="p">))</span> <span class="p">;</span>		<span class="sr">//</span><span class="err">添加</span>
+<span class="no">DROP</span> <span class="no">INDEX</span> <span class="p">[</span><span class="n">indexName</span><span class="p">]</span> <span class="no">ON</span> <span class="n">mytable</span><span class="p">;</span>    <span class="sr">//</span><span class="err">删除</span>
+<span class="sr">//</span><span class="err">创建表时指定</span>
+<span class="no">CREATE</span> <span class="no">TABLE</span> <span class="n">mytable</span><span class="p">(</span>  
+  <span class="no">ID</span> <span class="no">INT</span> <span class="no">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="n">username</span> <span class="no">VARCHAR</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="no">NOT</span> <span class="no">NULL</span><span class="p">,</span>
+  <span class="no">INDEX</span> <span class="p">[</span><span class="n">indexName</span><span class="p">](</span><span class="n">username</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+<span class="p">);</span>
+</code></pre>
+</div>
+<h3 id="主键索引">主键索引</h3>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span><span class="err">主键索引在创建表时直接创建</span><span class="p">,</span><span class="err">且不许为</span><span class="n">null</span><span class="err">值</span>
+<span class="no">CREATE</span> <span class="no">TABLE</span> <span class="n">mytable</span><span class="p">(</span>  
+  <span class="no">ID</span> <span class="no">INT</span> <span class="no">NOT</span> <span class="no">NULL</span><span class="p">,</span>   
+  <span class="n">username</span> <span class="no">VARCHAR</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="no">NOT</span> <span class="no">NULL</span><span class="p">,</span>  
+  <span class="no">PRIMARY</span> <span class="no">KEY</span><span class="p">(</span><span class="no">ID</span><span class="p">)</span>  
+ <span class="p">);</span>
+</code></pre>
+</div>
+<h3 id="唯一索引">唯一索引</h3>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span><span class="err">索引列的值必须唯一，但允许有空值</span>
+<span class="no">CREATE</span> <span class="no">UNIQUE</span> <span class="no">INDEX</span> <span class="n">indexName</span> <span class="no">ON</span> <span class="n">mytable</span><span class="p">(</span><span class="n">username</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>		<span class="o">/</span><span class="sr">/创建
+ALTER mytable ADD UNIQUE [indexName] ON (username(length)) ;	/</span><span class="o">/</span><span class="err">修改</span>	
+</code></pre>
+</div>
+<h3 id="组合索引">组合索引</h3>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="no">ALTER</span> <span class="no">TABLE</span> <span class="n">mytable</span> <span class="no">ADD</span> <span class="no">INDEX</span> <span class="n">mytable</span> <span class="p">(</span><span class="n">indexName1</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">indexName2</span><span class="p">,</span><span class="n">indexName3</span><span class="p">);</span>
+<span class="sr">//</span><span class="err">相当于建立三组组合索引</span>
+<span class="n">indexName1</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">indexName2</span><span class="p">,</span><span class="n">indexName3</span>
+<span class="n">indexName1</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">indexName2</span>
+<span class="n">indexName1</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">indexName3</span>
+</code></pre>
+</div>
+
+<h2 id="注意事项">注意事项</h2>
+<p>1、不要在索引列上进行运算</p>
+
+<p>2、不使用NOT IN和&lt;&gt;操作</p>
+
+<p>3、尽可能短地建立索引</p>
+
+<p>4、索引不会包含有NULL值的列</p>
+
+<h2 id="创建原则">创建原则</h2>
+<p>1、较频繁的作为查询条件的字段应该创建索引</p>
+
+<p>2、重复太多的字段不适合单独创建索引，即使频繁作为查询条件</p>
+
+<p>3、不会出现在WHERE子句中的字段不应该创建索引</p>
+
+<p>4、表的记录比较少，比如只有几百，一千条记录，那么没必要建立索引，直接全表查询即可。</p>
+
+<p>5、不重复的字段越多，那么索引的价值越高</p>
+
+<p>5、EXPLAIN Sql语句可以查看查询效率</p>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-07/Mysql%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
