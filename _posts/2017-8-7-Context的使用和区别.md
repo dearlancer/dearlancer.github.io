@@ -1,9 +1,7 @@
 ---
 layout: post
 title: Context的使用和区别
-excerpt: “ Context，中文直译为“上下文”，SDK中对其说明如下：
-Interface to global information about an application environment. This is an abstract class whose implementation is provided by the Android system. It allows access to application-specific resources and classes, as well as up-calls 
-for application-level operations such as launching activities, broadcasting and receiving intents, etc”
+excerpt: “Context，中文直译为“上下文”，SDK中对其说明如下:Interface to global information about an application environment.This is an abstract class whose implementation is provided by the Android system. It allows access to application-specific resources and classes, as well as up-calls for application-level operations such as launching activities, broadcasting and receiving intents, etc”
 categories: [android]
 comments: true
 ---

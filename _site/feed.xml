@@ -5,9 +5,50 @@
     <description>不为繁华易匠心</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 06 Aug 2017 18:14:48 +0200</pubDate>
-    <lastBuildDate>Sun, 06 Aug 2017 18:14:48 +0200</lastBuildDate>
+    <pubDate>Mon, 07 Aug 2017 15:10:37 +0200</pubDate>
+    <lastBuildDate>Mon, 07 Aug 2017 15:10:37 +0200</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>Context的使用和区别</title>
+        <description>&lt;h2 id=&quot;context作用&quot;&gt;Context作用&lt;/h2&gt;
+&lt;p&gt;Context，中文直译为“上下文”，SDK中对其说明如下：
+Interface to global information about an application environment. This is an abstract class whose implementation is provided by the Android system. It allows access to application-specific resources and classes, as well as up-calls for application-level operations such as launching activities, broadcasting and receiving intents, etc
+从中可得，它的作用如下
+1.描述应用程序的环境信息,即上下文
+2.该类是一个抽象(abstract class)类，Android提供了该抽象类的具体实现类(后面我们会讲到是ContextIml类)
+3.可以进行一些应用级别级别操作，例如启动acticity，service，接收intent信息等
+4.获取应用资源和类&lt;/p&gt;
+
+&lt;h2 id=&quot;context主要方法&quot;&gt;Context主要方法&lt;/h2&gt;
+&lt;p&gt;1.getAssets() //获取AssetManager对象，可以加载asset文件夹下面的资源
+2.getResources() //获取Resources资源，可以加载value文件下的资源
+3.getPackageManager() //获取PackageManager对象，获取包相关信息
+4.getMainLooper(). //获取主线程,可以对线程进行操作，但是不建议使用
+5.getApplicationContext() //获取Application级别的context
+6.getXXX(Id).  //获取一些资源，本质是调用Resources的一些方法
+7.startXxx() //启动某个组件
+8.checkPemission()  //检测权限&lt;/p&gt;
+
+&lt;h2 id=&quot;applicationactivityservice三种context的区别&quot;&gt;Application,Activity,Service三种Context的区别&lt;/h2&gt;
+&lt;p&gt;一个应用中，Context的数量=Activity数量+Service数量+1(Application的Context)
+Application的Context生命周期同应用相同，相当于一个全局变量，所以在一些需要长期存在或者生命周期不固定的对象中，可以使用Applicatiion的Context来调用系统资源
+Activity的Context生命伴随Activity的onCreate()函数而生成，onDestory()后销毁,如果对象的生命周期同Activity，建议首先使用Acitivty的Context;
+Service的Context在startService()或者bindService()被调用时创建,生命周期同Service,在程序退出时，Service依然可能存在&lt;/p&gt;
+
+&lt;h2 id=&quot;在使用context进行应用级别的操作时需要注意的点&quot;&gt;在使用Context进行应用级别的操作时需要注意的点&lt;/h2&gt;
+&lt;p&gt;1.调用startActivity方法，首先建议使用Activity的Context因为这会给新建的Activity新建栈信息，如果使用Application或者Service的来启动，需要手动添加栈信息,intent.addFlag(ACTIVITY_NEW_STACK)；
+2.Dialog传入的Context不能为Application或者Service的Context，Dialog是依赖于Window存在的，而window是和Activity想对应的，如果传入其他Context，生命周期就会难以同步&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 07 Aug 2017 00:00:00 +0200</pubDate>
+        <link>http://localhost:4000/articles/2017-08/Context%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8C%BA%E5%88%AB</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2017-08/Context%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8C%BA%E5%88%AB</guid>
+        
+        
+        <category>android</category>
+        
+      </item>
     
       <item>
         <title>自定义Dialog</title>
@@ -1027,80 +1068,6 @@ other中第一次获取的值&lt;/p&gt;
         
         
         <category>android</category>
-        
-      </item>
-    
-      <item>
-        <title>设计模式之单例模式</title>
-        <description>&lt;h1 id=&quot;单例模式&quot;&gt;单例模式&lt;/h1&gt;
-&lt;p&gt;关键点：
-构造函数不对外开放，一般为private
-通过一个静态方法或枚举对象返回单例类对象
-确保单例类的对象只有一个，尤其在多线程模式下
-确保单例类在反序列化时不会重新构造对象
-必须保证线程安全
-应用场景：
-类 占用资源过多不宜创建多个实例，比如IO操作和数据库访问等&lt;/p&gt;
-&lt;h2 id=&quot;饿汉模式&quot;&gt;饿汉模式&lt;/h2&gt;
-&lt;p&gt;在类首次加载到内存的时候就被初始化,不管是否使用都会初始化&lt;/p&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-     &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;h2 id=&quot;懒汉模式&quot;&gt;懒汉模式&lt;/h2&gt;
-&lt;p&gt;首次使用时被初始化,每次调用都会进行同步,会消耗不必要的资源,造成不必要的同步开销&lt;/p&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;synchronized&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-           &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-               &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;h2 id=&quot;double-check-lockdcl推荐使用&quot;&gt;Double Check Lock(DCL)（推荐使用）&lt;/h2&gt;
-&lt;p&gt;优点：资源利用率高,效率高 缺点：高并发的环境下小概率发生，第一次加载略慢，jdk1.5版本一下无法确保顺序&lt;/p&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ststic&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;synchronized&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-              &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-             &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;h2 id=&quot;静态内部类单例模式推荐使用&quot;&gt;静态内部类单例模式(推荐使用)&lt;/h2&gt;
-&lt;p&gt;适用场景，构造函数无参数&lt;/p&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ststic&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;第一次调用&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;类时不会加载，只有在&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getInstance&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;调用时才会初始化，线程安全，同时延迟了单例的实例化&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;SingletonHolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-     &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;  &lt;span class=&quot;nc&quot;&gt;SingletonHolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;静态内部类&lt;/span&gt;
-      &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt;  &lt;span class=&quot;no&quot;&gt;Singleton&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Thu, 20 Oct 2016 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F</link>
-        <guid isPermaLink="true">http://localhost:4000/articles/2016-10/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F</guid>
-        
-        
-        <category>android</category>
-        
-        <category>设计模式</category>
         
       </item>
     
