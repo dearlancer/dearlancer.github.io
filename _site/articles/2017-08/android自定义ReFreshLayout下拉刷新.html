@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>自定义RefreshLayout实现下拉刷新动画</title>
+  <meta name="description" content="“实现下拉刷新控件总的来说就实现几个方面,与自身布局相关的函数onMeasure,onLayout,与事件相关的函数onInterceptTouchEvent,onTouchEvent”">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="自定义RefreshLayout实现下拉刷新动画">自定义RefreshLayout实现下拉刷新动画</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        7 AUG 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    3 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="基本思路">基本思路</h2>
+<p>继承自ViewGroup,ViewGroup内部包含两个控件,需要展示的动画效果控件(这里使用ImageView),你的列表控件(ListView,RecycleView等)，通过onMeasure和onLayout对两个控件进行动态布局，通过与事件相关的函数onInterceptTouchEvent，onTouchEvent”对事件进行拦截和处理。</p>
+
+<h2 id="基本实现">基本实现</h2>
+
+<h3 id="绘制相关">绘制相关</h3>
+<h4 id="onmeasure">onMeasure</h4>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>  <span class="vi">@Override</span>
+  <span class="kp">protected</span> <span class="n">void</span> <span class="n">onMeasure</span><span class="p">(</span><span class="n">int</span> <span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">int</span> <span class="n">heightMeasureSpec</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">super</span><span class="p">.</span><span class="nf">onMeasure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
+      <span class="n">ensureTarget</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">mTarget</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+          <span class="k">return</span><span class="p">;</span>
+      <span class="n">widthMeasureSpec</span> <span class="o">=</span> <span class="no">MeasureSpec</span><span class="p">.</span><span class="nf">makeMeasureSpec</span><span class="p">(</span><span class="n">getMeasuredWidth</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingRight</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingLeft</span><span class="p">(),</span> <span class="no">MeasureSpec</span><span class="o">.</span><span class="no">EXACTLY</span><span class="p">);</span>
+      <span class="n">heightMeasureSpec</span> <span class="o">=</span> <span class="no">MeasureSpec</span><span class="p">.</span><span class="nf">makeMeasureSpec</span><span class="p">(</span><span class="n">getMeasuredHeight</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingTop</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingBottom</span><span class="p">(),</span> <span class="no">MeasureSpec</span><span class="o">.</span><span class="no">EXACTLY</span><span class="p">);</span>
+      <span class="n">mTarget</span><span class="p">.</span><span class="nf">measure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
+      <span class="n">mRefreshView</span><span class="p">.</span><span class="nf">measure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
+</code></pre>
+</div>
+<h4 id="onlayout">onLayout</h4>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="vi">@Override</span>
+ <span class="kp">protected</span> <span class="n">void</span> <span class="n">onLayout</span><span class="p">(</span><span class="n">boolean</span> <span class="n">changed</span><span class="p">,</span> <span class="n">int</span> <span class="n">l</span><span class="p">,</span> <span class="n">int</span> <span class="n">t</span><span class="p">,</span> <span class="n">int</span> <span class="n">r</span><span class="p">,</span> <span class="n">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">ensureTarget</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">mTarget</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+          <span class="k">return</span><span class="p">;</span>
+      <span class="n">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">getMeasuredHeight</span><span class="p">();</span>
+      <span class="n">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">getMeasuredWidth</span><span class="p">();</span>
+      <span class="n">int</span> <span class="n">paddingLeft</span> <span class="o">=</span> <span class="n">getPaddingLeft</span><span class="p">();</span>
+      <span class="n">int</span> <span class="n">paddingTop</span> <span class="o">=</span> <span class="n">getPaddingTop</span><span class="p">();</span>
+      <span class="n">int</span> <span class="n">paddingRight</span> <span class="o">=</span> <span class="n">getPaddingRight</span><span class="p">();</span>
+      <span class="n">int</span> <span class="n">paddingBottom</span> <span class="o">=</span> <span class="n">getPaddingBottom</span><span class="p">();</span>
+      <span class="n">mTarget</span><span class="p">.</span><span class="nf">layout</span><span class="p">(</span><span class="n">paddingLeft</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">mTarget</span><span class="p">.</span><span class="nf">getTop</span><span class="p">(),</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="n">paddingRight</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">height</span> <span class="o">-</span> <span class="n">paddingBottom</span> <span class="o">+</span> <span class="n">mTarget</span><span class="p">.</span><span class="nf">getTop</span><span class="p">());</span>
+      <span class="n">mRefreshView</span><span class="p">.</span><span class="nf">layout</span><span class="p">(</span><span class="n">paddingLeft</span><span class="p">,</span> <span class="n">paddingTop</span><span class="p">,</span> <span class="n">paddingLeft</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="n">paddingRight</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">height</span> <span class="o">-</span> <span class="n">paddingBottom</span><span class="p">);</span>
+    <span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="事件拦截">事件拦截</h3>
+<h4 id="onintercepttouchevent">onInterceptTouchEvent</h4>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span><span class="err">关键点</span><span class="p">,</span><span class="err">什么时候对实践进行拦截</span><span class="p">(</span><span class="err">向下拖动的时候</span><span class="p">),</span><span class="err">设置一个标志</span><span class="n">mIsBeingDragged</span><span class="err">标明控件是否被拖动</span>
+ <span class="vi">@Override</span>
+    <span class="kp">public</span> <span class="n">boolean</span> <span class="n">onInterceptTouchEvent</span><span class="p">(</span><span class="no">MotionEvent</span> <span class="n">ev</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isEnabled</span><span class="p">()</span><span class="o">||</span> <span class="n">mReturningToStart</span><span class="o">||</span> <span class="n">mNestedScrollInProgress</span> <span class="o">||</span> <span class="p">(</span><span class="n">canChildScrollUp</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">mRefreshing</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kp">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">final</span> <span class="n">int</span> <span class="n">action</span> <span class="o">=</span> <span class="n">ev</span><span class="p">.</span><span class="nf">getActionMasked</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mReturningToStart</span> <span class="o">&amp;&amp;</span> <span class="n">action</span> <span class="o">==</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_DOWN</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">mReturningToStart</span> <span class="o">=</span> <span class="kp">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">switch</span> <span class="p">(</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_DOWN</span><span class="p">:</span>
+            <span class="sr">//</span><span class="err">标记按下的的点坐标，</span><span class="n">mIsBeingDragged</span><span class="o">=</span><span class="kp">false</span>
+            <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_MOVE</span><span class="p">:</span>
+            <span class="sr">//</span><span class="err">根据之前标记的点来进行计算，是否为向下拖动，是则设置</span><span class="n">mIsBeingDragged</span><span class="o">=</span><span class="kp">true</span>
+            <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_UP</span><span class="p">:</span>
+            <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_CANCEL</span><span class="p">:</span>
+            <span class="sr">//</span><span class="err">系列事件处理完毕，重置所有的点</span>
+            <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_POINTER_UP</span><span class="p">:</span>
+                <span class="n">onSecondaryPointerUp</span><span class="p">(</span><span class="n">ev</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">mIsBeingDragged</span><span class="p">;</span>
+    <span class="p">}</span>    
+</code></pre>
+</div>
+<h4 id="ontouchevent">onTouchEvent</h4>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="vi">@Override</span>
+ <span class="kp">public</span> <span class="n">boolean</span> <span class="n">onTouchEvent</span><span class="p">(</span><span class="no">MotionEvent</span> <span class="n">ev</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">mIsBeingDragged</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="k">super</span><span class="p">.</span><span class="nf">onTouchEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="n">final</span> <span class="n">int</span> <span class="n">action</span> <span class="o">=</span> <span class="n">ev</span><span class="p">.</span><span class="nf">getActionMasked</span><span class="p">();</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">mReturningToStart</span> <span class="o">&amp;&amp;</span> <span class="n">action</span> <span class="o">==</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_DOWN</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">mReturningToStart</span> <span class="o">=</span> <span class="kp">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">switch</span> <span class="p">(</span><span class="n">action</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_MOVE</span><span class="p">:</span>
+             <span class="sr">//</span><span class="err">正在刷新</span>  
+                  <span class="sr">//</span><span class="err">向上，如果子控件可以向上偏移，子控件向上移动，不能向上便宜，</span><span class="n">recycleView</span><span class="err">滚动</span>
+                  <span class="sr">//</span><span class="err">向下，计算偏移距离</span>
+             <span class="sr">//</span><span class="err">没有刷新</span> <span class="err">根据当前手指滑动计算偏移距离</span><span class="p">,</span><span class="err">给</span><span class="n">drawable</span><span class="err">设置偏移百分比</span>
+             <span class="sr">//</span><span class="err">根据计算出的偏移距离重新布局</span>
+          <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_UP</span><span class="p">:</span>
+          <span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_CANCEL</span><span class="p">:</span>
+              <span class="sr">//</span><span class="err">如果下拉距离超过最大下拉距离，回调刷新接口</span>
+              <span class="sr">//</span><span class="err">否则，开启动画，让子控件回到顶部</span>
+              <span class="sr">//</span><span class="err">重置所有记录</span>
+</code></pre>
+</div>
+
+<h2 id="扩展">扩展</h2>
+<h3 id="nestedscroll事件相关">NestedScroll事件相关</h3>
+<p>实现NestedScrollingChild,NestedScrollingParent接口
+NestedScrollingChild负责子View的NestedScroll事件，NestedScrollingParent负责父View的NestedScroll事件
+主要的事件交由NestedScrollingChildHelper和NestedScrollingParentHelper处理</p>
+
+<h3 id="drawable动画">Drawable动画</h3>
+<p>定义一个上层类实现Drawable.Callback，Animatable接口
+public abstract class RefreshDrawable extends Drawable implements Drawable.Callback, Animatable
+Drawable.Callback接口主要实现drawable的绘制事件,这里只是作为一个中间件，把事件都交由父类处理
+Animatable主要实现动画相关start(),stop(),boolean isRunning()这三个函数
+根据isRunning()来判断是否不断重绘自身,start(),stop()由外界调用</p>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-08/android%E8%87%AA%E5%AE%9A%E4%B9%89ReFreshLayout%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
