@@ -7,7 +7,12 @@ categories:
 - 适配器
 comments: true
 ---
-# 实现原理
+<!-- TOC -->
+
+- [1. 实现原理](#1-实现原理)
+
+<!-- /TOC -->
+# 1. 实现原理
 先从recycleView.Adapter的实现说起,新建一个MyAdapter继承自RecyclerView.Adapter,系统会自动为我们成需要完成的函数实现，为了区分绑定的ViewHolder,我们还可以重写getItemViewType
 ```ruby
 public class MyAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -30,4 +35,6 @@ public class MyAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     }
 }
+# 2. 实现原理
+hahah
 ```

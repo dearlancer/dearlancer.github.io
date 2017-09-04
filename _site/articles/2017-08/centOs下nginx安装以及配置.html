@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>centOs下nginx安装以及配置</title>
+  <meta name="description" content="记录关于centOs下nginx的安装以及配置">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="centOs下nginx安装以及配置">centOs下nginx安装以及配置</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        22 AUG 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="简介">简介</h1>
+<p>Nginx 是一个网页服务器，它能反向代理HTTP, HTTPS, SMTP, POP3, IMAP的协议链接，以及一个负载均衡器和一个HTTP缓存。</p>
+
+<h1 id="安装">安装</h1>
+<p>直接通过 yum install nginx 肯定是不行的,因为yum没有nginx，所以首先把 nginx 的源加入 yum 中</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span> <span class="mi">1</span><span class="o">.</span><span class="err">将</span><span class="n">nginx</span><span class="err">放到</span><span class="n">yum</span> <span class="n">repro</span><span class="err">库中</span>
+<span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">nginx</span><span class="p">.</span><span class="nf">org</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">centos</span><span class="o">/</span><span class="mi">7</span><span class="o">/</span><span class="n">noarch</span><span class="o">/</span><span class="no">RPMS</span><span class="o">/</span><span class="n">nginx</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">centos</span><span class="o">-</span><span class="mi">7</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="nf">el7</span><span class="p">.</span><span class="nf">ngx</span><span class="p">.</span><span class="nf">noarch</span><span class="p">.</span><span class="nf">rpm</span>
+<span class="sr">//</span> <span class="mi">2</span><span class="o">.</span><span class="err">执行查询操作，这时候库应该有</span><span class="n">nginx</span><span class="err">了</span>
+<span class="n">yum</span> <span class="n">info</span> <span class="n">nginx</span>
+<span class="sr">//</span> <span class="mi">3</span><span class="o">.</span><span class="err">执行安装操作</span>
+<span class="n">yum</span> <span class="n">install</span> <span class="n">nginx</span>
+<span class="sr">//</span> <span class="mi">4</span><span class="o">.</span><span class="err">验证</span><span class="n">nginx</span><span class="err">已经安装</span>
+<span class="n">nginx</span> <span class="o">-</span><span class="n">v</span>
+<span class="sr">//</span> <span class="mi">5</span><span class="o">.</span>  <span class="err">启动</span><span class="n">nginx</span>
+<span class="n">service</span> <span class="n">nginx</span> <span class="n">start</span>
+<span class="sr">//</span><span class="err">这时候通过公网</span><span class="n">ip</span><span class="err">直接访问就可以显示出</span><span class="n">nginx</span><span class="err">的映射了</span>
+</code></pre>
+</div>
+
+<h1 id="配置">配置</h1>
+<p>默认的配置文件在 /etc/nginx/nginx.conf中
+但是不建议在这个文件中直接修改/etc/nginx/conf.d/目录中，可以新建自己的配置文件***.conf</p>
+
+<p>配置文件的编写</p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">server</span> <span class="p">{</span>
+    <span class="n">listen</span> <span class="mi">8888</span><span class="p">;</span>      <span class="sr">//</span><span class="err">监听的端口号</span>
+    <span class="n">server_name</span> <span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">;</span>    <span class="sr">//</span><span class="err">映射的域名</span>
+
+    <span class="sr">//</span><span class="err">代理映射</span>   <span class="err">主要作用：把指定的端口映射到对应的文件上</span><span class="p">,</span><span class="err">这里运行</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="err">将会自动加载</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">example</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="nf">html</span><span class="err">文件</span>
+    <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+    <span class="n">root</span>  <span class="sr">/var/</span><span class="n">www</span><span class="o">/</span><span class="n">example</span><span class="p">;</span>    <span class="sr">//</span><span class="err">映射的根目录</span>
+    <span class="n">index</span>      <span class="n">index</span><span class="p">.</span><span class="nf">html</span><span class="p">;</span>        <span class="sr">//</span><span class="err">映射的主页</span>
+    <span class="p">}</span>
+
+    <span class="sr">//</span><span class="err">启用反向代理</span>       <span class="err">主要作用：把服务器所监听的端口映射到</span><span class="n">nginx</span><span class="err">端口上，这里把服务器设置要代理的</span> <span class="n">uri</span><span class="err">比如（</span><span class="mi">127</span><span class="o">.</span><span class="mi">116</span><span class="o">.</span><span class="mi">60</span><span class="p">:</span><span class="mi">5200</span><span class="err">）映射到</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="o">/</span><span class="n">api</span><span class="err">上</span>
+    <span class="n">location</span> <span class="sr">/api{
+            proxy_pass http:/</span><span class="o">/</span><span class="n">ip</span><span class="p">:</span><span class="err">端口号</span><span class="p">;</span>          <span class="c1">#设置要代理的 uri</span>
+            <span class="n">proxy_set_header</span> <span class="no">X</span><span class="o">-</span><span class="no">Real</span><span class="o">-</span><span class="no">IP</span> <span class="vg">$remote_addr</span><span class="p">;</span>
+            <span class="n">proxy_set_header</span> <span class="no">X</span><span class="o">-</span><span class="no">Scheme</span> <span class="vg">$scheme</span><span class="p">;</span>
+            <span class="n">proxy_http_version</span> <span class="mi">1</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span>
+            <span class="n">proxy_set_header</span> <span class="no">Connection</span> <span class="s2">""</span><span class="p">;</span>
+            <span class="n">proxy_set_header</span> <span class="no">Host</span> <span class="vg">$http_host</span><span class="p">;</span>
+
+            <span class="n">proxy_connect_timeout</span> <span class="mi">10</span><span class="p">;</span>            <span class="c1">#nginx跟后端服务器连接超时时间(代理连接超时)</span>
+            <span class="n">proxy_send_timeout</span> <span class="mi">15</span><span class="p">;</span>                <span class="c1">#后端服务器数据回传时间(代理发送超时)</span>
+            <span class="n">proxy_read_timeout</span> <span class="mi">300</span><span class="p">;</span>              <span class="c1">#连接成功后，后端服务器响应时间(代理接收超时)</span>
+
+            <span class="n">client_max_body_size</span> <span class="mi">10</span><span class="n">m</span><span class="p">;</span>          <span class="c1">#允许客户端请求的最大单文件字节数</span>
+            <span class="n">client_body_buffer_size</span> <span class="mi">128</span><span class="n">k</span><span class="p">;</span>     <span class="c1">#缓冲区代理缓冲用户端请求的最大字节数，</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="sr">//</span><span class="err">配置完</span><span class="n">conf</span><span class="err">文件后可以执行</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">nginx</span> <span class="o">-</span><span class="n">t</span>  <span class="err">来查看配置文件是否正确</span><span class="p">,</span><span class="err">检查如果返回</span><span class="n">ok</span><span class="err">，则说明修改文件没有出现任何错误</span>
+<span class="sr">//se</span><span class="n">rvice</span> <span class="n">nginx</span> <span class="n">reload</span><span class="err">重新加载</span><span class="n">nginx</span><span class="err">配置</span><span class="p">,</span><span class="err">访问</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="err">可以加载指定的</span><span class="n">deinx</span><span class="err">主页</span>
+</code></pre>
+</div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-08/centOs%E4%B8%8Bnginx%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
