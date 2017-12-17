@@ -140,7 +140,7 @@
 
 <h3 id="绘制相关">绘制相关</h3>
 <h4 id="onmeasure">onMeasure</h4>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>  <span class="vi">@Override</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="vi">@Override</span>
   <span class="kp">protected</span> <span class="n">void</span> <span class="n">onMeasure</span><span class="p">(</span><span class="n">int</span> <span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">int</span> <span class="n">heightMeasureSpec</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">super</span><span class="p">.</span><span class="nf">onMeasure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
       <span class="n">ensureTarget</span><span class="p">();</span>
@@ -150,10 +150,9 @@
       <span class="n">heightMeasureSpec</span> <span class="o">=</span> <span class="no">MeasureSpec</span><span class="p">.</span><span class="nf">makeMeasureSpec</span><span class="p">(</span><span class="n">getMeasuredHeight</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingTop</span><span class="p">()</span> <span class="o">-</span> <span class="n">getPaddingBottom</span><span class="p">(),</span> <span class="no">MeasureSpec</span><span class="o">.</span><span class="no">EXACTLY</span><span class="p">);</span>
       <span class="n">mTarget</span><span class="p">.</span><span class="nf">measure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
       <span class="n">mRefreshView</span><span class="p">.</span><span class="nf">measure</span><span class="p">(</span><span class="n">widthMeasureSpec</span><span class="p">,</span> <span class="n">heightMeasureSpec</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h4 id="onlayout">onLayout</h4>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="vi">@Override</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="vi">@Override</span>
  <span class="kp">protected</span> <span class="n">void</span> <span class="n">onLayout</span><span class="p">(</span><span class="n">boolean</span> <span class="n">changed</span><span class="p">,</span> <span class="n">int</span> <span class="n">l</span><span class="p">,</span> <span class="n">int</span> <span class="n">t</span><span class="p">,</span> <span class="n">int</span> <span class="n">r</span><span class="p">,</span> <span class="n">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">ensureTarget</span><span class="p">();</span>
       <span class="k">if</span> <span class="p">(</span><span class="n">mTarget</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
@@ -167,12 +166,11 @@
       <span class="n">mTarget</span><span class="p">.</span><span class="nf">layout</span><span class="p">(</span><span class="n">paddingLeft</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">mTarget</span><span class="p">.</span><span class="nf">getTop</span><span class="p">(),</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="n">paddingRight</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">height</span> <span class="o">-</span> <span class="n">paddingBottom</span> <span class="o">+</span> <span class="n">mTarget</span><span class="p">.</span><span class="nf">getTop</span><span class="p">());</span>
       <span class="n">mRefreshView</span><span class="p">.</span><span class="nf">layout</span><span class="p">(</span><span class="n">paddingLeft</span><span class="p">,</span> <span class="n">paddingTop</span><span class="p">,</span> <span class="n">paddingLeft</span> <span class="o">+</span> <span class="n">width</span> <span class="o">-</span> <span class="n">paddingRight</span><span class="p">,</span> <span class="n">paddingTop</span> <span class="o">+</span> <span class="n">height</span> <span class="o">-</span> <span class="n">paddingBottom</span><span class="p">);</span>
     <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="事件拦截">事件拦截</h3>
 <h4 id="onintercepttouchevent">onInterceptTouchEvent</h4>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span><span class="err">关键点</span><span class="p">,</span><span class="err">什么时候对实践进行拦截</span><span class="p">(</span><span class="err">向下拖动的时候</span><span class="p">),</span><span class="err">设置一个标志</span><span class="n">mIsBeingDragged</span><span class="err">标明控件是否被拖动</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span><span class="err">关键点</span><span class="p">,</span><span class="err">什么时候对实践进行拦截</span><span class="p">(</span><span class="err">向下拖动的时候</span><span class="p">),</span><span class="err">设置一个标志</span><span class="n">mIsBeingDragged</span><span class="err">标明控件是否被拖动</span>
  <span class="vi">@Override</span>
     <span class="kp">public</span> <span class="n">boolean</span> <span class="n">onInterceptTouchEvent</span><span class="p">(</span><span class="no">MotionEvent</span> <span class="n">ev</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isEnabled</span><span class="p">()</span><span class="o">||</span> <span class="n">mReturningToStart</span><span class="o">||</span> <span class="n">mNestedScrollInProgress</span> <span class="o">||</span> <span class="p">(</span><span class="n">canChildScrollUp</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">mRefreshing</span><span class="p">))</span> <span class="p">{</span>
@@ -196,10 +194,9 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">mIsBeingDragged</span><span class="p">;</span>
     <span class="p">}</span>    
-</code></pre>
-</div>
+</code></pre></div></div>
 <h4 id="ontouchevent">onTouchEvent</h4>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="vi">@Override</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="vi">@Override</span>
  <span class="kp">public</span> <span class="n">boolean</span> <span class="n">onTouchEvent</span><span class="p">(</span><span class="no">MotionEvent</span> <span class="n">ev</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">mIsBeingDragged</span><span class="p">)</span> <span class="p">{</span>
           <span class="k">return</span> <span class="k">super</span><span class="p">.</span><span class="nf">onTouchEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">);</span>
@@ -220,8 +217,7 @@
               <span class="sr">//</span><span class="err">如果下拉距离超过最大下拉距离，回调刷新接口</span>
               <span class="sr">//</span><span class="err">否则，开启动画，让子控件回到顶部</span>
               <span class="sr">//</span><span class="err">重置所有记录</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="扩展">扩展</h2>
 <h3 id="nestedscroll事件相关">NestedScroll事件相关</h3>

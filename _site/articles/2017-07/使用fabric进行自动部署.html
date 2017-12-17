@@ -136,81 +136,70 @@
     <p>Fabric是一个Python库，用于简化使用SSH的应用程序部署或系统管理任务。通过它我们可以执行本地以及服务器的shell命令，上传，下载文件，以及其他的一些功能。			
 对于重复性大的工作，可以通过Fabric来部署代码，实现一劳永逸。</p>
 <h2 id="安装fabric">安装Fabric</h2>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="n">fabric</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pip</span> <span class="n">install</span> <span class="n">fabric</span>
+</code></pre></div></div>
 <p>或者</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">fabric</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">fabric</span>
+</code></pre></div></div>
 <p>安装完成后,可以在shell中通过命令查看是否安装成功</p>
 
 <p><img src="/img/fab_list.png" alt="which_fab" /></p>
 <h2 id="使用">使用</h2>
 <p>常用命令行</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="err">命令行常用：</span> <span class="n">fab</span> <span class="o">--</span><span class="n">help</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">命令行常用：</span> <span class="n">fab</span> <span class="o">--</span><span class="n">help</span>
 <span class="n">fab</span> <span class="o">-</span><span class="n">l</span>             <span class="o">--</span> <span class="err">显示可用的</span><span class="n">task</span><span class="err">（命令）</span>
 <span class="n">fab</span> <span class="o">-</span><span class="no">H</span>             <span class="o">--</span> <span class="err">指定</span><span class="n">host</span><span class="err">，支持多</span><span class="n">host</span><span class="err">逗号分开</span>
 <span class="n">fab</span> <span class="o">-</span><span class="no">R</span>             <span class="o">--</span> <span class="err">指定</span><span class="n">role</span><span class="err">，支持多个</span>
 <span class="n">fab</span> <span class="o">-</span><span class="no">P</span>             <span class="o">--</span> <span class="err">并发数，默认是串行</span>
 <span class="n">fab</span> <span class="o">-</span><span class="n">w</span>             <span class="o">--</span> <span class="n">warn_only</span><span class="err">，默认是碰到异常直接</span><span class="n">abort</span><span class="err">退出</span>
 <span class="n">fab</span> <span class="o">-</span><span class="n">f</span>             <span class="o">--</span> <span class="err">指定入口文件，</span><span class="n">fab</span><span class="err">默认入口文件是：</span><span class="n">fabfile</span><span class="o">/</span><span class="n">fabfile</span><span class="p">.</span><span class="nf">py</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>在你需要运行的文件夹下新建一个fabfile.py文件 	
 然后就是正常的脚本编写了		
 栗子：</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hi</span><span class="p">():</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hi</span><span class="p">():</span>
 	<span class="nb">print</span><span class="p">(</span><span class="s2">"hi girl!"</span><span class="p">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>在shell中运行命令,就能看到输出了。</p>
 
 <p><img src="/img/hi.png" alt="which_fab" /></p>
 
 <p>带参数的函数</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"%s = %s!"</span> <span class="o">%</span> <span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 
 <span class="sr">//</span><span class="err">在</span><span class="n">shell</span><span class="err">中调用</span>
 <span class="n">fab</span> <span class="n">hello</span><span class="ss">:name</span><span class="p">,</span><span class="n">value</span>    
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="基本命令使用">基本命令使用</h2>
 <p>导入包函数</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="o">*</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="o">*</span>
+</code></pre></div></div>
 <h3 id="lcddir">lcd(dir)</h3>
 <p>执行本地的切换命令		
 相当于在本地执行 cd dir</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">lcd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lcd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
+</code></pre></div></div>
 <h3 id="cddir">cd(dir)</h3>
 <p>执行远程切换命令		
 相当于在服务器执行cd dir</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp/conf'</span><span class="p">)</span>
+</code></pre></div></div>
 <h3 id="localexe">local（exe）</h3>
 <p>执行本地命令语句，后跟命令语句</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">local</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span> <span class="o">/</span><span class="sr">/显示本地当前文件夹下所有文件
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">local</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span> <span class="o">/</span><span class="sr">/显示本地当前文件夹下所有文件
+</span></code></pre></div></div>
 <h3 id="runexe">run(exe)</h3>
 <p>与local相对，执行服务器命令语句</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">run</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">run</span><span class="p">(</span><span class="s1">'ls -l | wc -l'</span><span class="p">)</span>
+</code></pre></div></div>
 <h3 id="with">with</h3>
 <p>执行多步命令</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">'/home/tmp'</span><span class="p">)</span>
 	<span class="n">run</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h3 id="在指定的host上运行">在指定的host上运行</h3>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">env</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="p">.</span><span class="nf">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'host1'</span><span class="p">,</span> <span class="s1">'host2'</span><span class="p">]</span>
 <span class="n">env</span><span class="p">.</span><span class="nf">passwords</span> <span class="o">=</span> <span class="p">{</span>
@@ -219,10 +208,9 @@
 <span class="p">}</span>
 <span class="k">def</span> <span class="nf">taskA</span><span class="p">():</span>
     <span class="n">run</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>对多个host指派不同的任务</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">from</span> <span class="n">fabric</span><span class="p">.</span><span class="nf">api</span> <span class="n">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span>
 
 <span class="n">env</span><span class="p">.</span><span class="nf">roledefs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">'db'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'db1'</span><span class="p">,</span> <span class="s1">'db2'</span><span class="p">],</span>
@@ -239,12 +227,11 @@
 <span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
     <span class="c1"># Code updates here.</span>
     <span class="n">pass</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="注解">注解</h2>
 <p>@task
 在函数顶部使用这个注解后，fab –list命令便可以看到可执行函数</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@task</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@task</span>
 <span class="k">def</span> <span class="nf">migrate</span><span class="p">():</span>
     <span class="n">pass</span>
 <span class="vi">@task</span>
@@ -253,8 +240,7 @@
 <span class="vi">@task</span>
 <span class="k">def</span> <span class="nf">provision</span><span class="p">():</span>
     <span class="n">pass</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
   </article>
 </div>

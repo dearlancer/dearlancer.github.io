@@ -124,7 +124,7 @@
       <span class="read-time" title="Estimated read time">
   
   
-    4 mins read
+    3 mins read
   
 </span>
 
@@ -139,20 +139,18 @@
 <p>SharedPreferences存储数据的本质是在本地新建一个xml文件，以键对值的方式存储数据,文件存放在/data/data/<package name="">/shared_prefs目录下</package></p>
 <h2 id="使用">使用</h2>
 <p>一个简单的栗子</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span> <span class="o">=</span> <span class="n">getSharedPreferences</span><span class="p">(</span><span class="s2">"lizi"</span><span class="p">,</span> <span class="no">Context</span><span class="o">.</span><span class="no">MODE_PRIVATE</span><span class="p">);</span>	<span class="sr">//</span><span class="err">新建名为</span><span class="n">lizi</span><span class="err">的</span><span class="n">xml</span><span class="err">文件</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span> <span class="o">=</span> <span class="n">getSharedPreferences</span><span class="p">(</span><span class="s2">"lizi"</span><span class="p">,</span> <span class="no">Context</span><span class="o">.</span><span class="no">MODE_PRIVATE</span><span class="p">);</span>	<span class="sr">//</span><span class="err">新建名为</span><span class="n">lizi</span><span class="err">的</span><span class="n">xml</span><span class="err">文件</span>
 <span class="no">Editor</span> <span class="n">editor</span> <span class="o">=</span> <span class="n">sharedPreferences</span><span class="p">.</span><span class="nf">edit</span><span class="p">();</span>	<span class="sr">//</span><span class="err">获取编辑器</span>
 <span class="n">editor</span><span class="p">.</span><span class="nf">putString</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span><span class="s2">"sharedPreferences"</span><span class="p">);</span>	<span class="sr">//</span><span class="err">写入</span><span class="n">string</span><span class="err">数据</span>
 <span class="n">editor</span><span class="p">.</span><span class="nf">putInt</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span><span class="mi">10086</span><span class="p">);</span>   <span class="sr">//</span><span class="err">写入</span><span class="n">int</span><span class="err">数据</span>
 <span class="n">editor</span><span class="p">.</span><span class="nf">commit</span><span class="p">();</span>	<span class="sr">//</span><span class="err">提交</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="方法详解">方法详解</h2>
 <h3 id="实例化单例">实例化（单例）</h3>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span> <span class="o">=</span> <span class="no">PreferenceManager</span><span class="p">.</span><span class="nf">getDefaultSharedPreferences</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span> <span class="o">=</span> <span class="no">PreferenceManager</span><span class="p">.</span><span class="nf">getDefaultSharedPreferences</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
 <span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="nf">getSharedPreferences</span><span class="p">(</span><span class="s2">"lizi"</span><span class="p">,</span> <span class="no">Context</span><span class="o">.</span><span class="no">MODE_PRIVATE</span><span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>前者内部也是调用后者来实现的，只不过前者默认新建一个包名+”_preferences”的xml文件
 这里我们知道，有关文件读写操作的函数其实都是由contextImpl来实现的，所以真正调用的是contextImpl的函数
 参数:
@@ -203,7 +201,7 @@ name就是需要新建的xml文件的名字，第二个参数为操作模式，�
 <h2 id="特别需要注意的点">特别需要注意的点</h2>
 <p>以上的操作如果都是在同一个进程进行的，那么不会有什么问题，但是SharedPreferences对文件的读写没有实现AIDL方式，所以在不同的进程中进行操作，取得的对象就会不同，相应的，取得的值也会不同。
 举个栗子</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="err">声明两个在不同线程中的</span><span class="n">activity</span><span class="o">--&gt;</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span><span class="err">声明两个在不同线程中的</span><span class="n">activity</span><span class="o">--&gt;</span>
 <span class="o">&lt;</span><span class="n">activity</span> <span class="n">android</span><span class="ss">:name</span><span class="o">=</span><span class="s2">".MainActivity"</span><span class="o">&gt;</span>
             <span class="o">&lt;</span><span class="n">intent</span><span class="o">-</span><span class="n">filter</span><span class="o">&gt;</span>
                 <span class="o">&lt;</span><span class="n">action</span> <span class="n">android</span><span class="ss">:name</span><span class="o">=</span><span class="s2">"android.intent.action.MAIN"</span> <span class="o">/&gt;</span>
@@ -213,10 +211,9 @@ name就是需要新建的xml文件的名字，第二个参数为操作模式，�
         &lt;/</span><span class="n">activity</span><span class="o">&gt;</span>
 <span class="o">&lt;</span><span class="n">activity</span> <span class="n">android</span><span class="ss">:name</span><span class="o">=</span><span class="s2">".OtherActivity"</span>
             <span class="n">android</span><span class="ss">:process</span><span class="o">=</span><span class="s2">":other"</span><span class="o">/&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>MainActivity中的代码</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">MainActivity</span> <span class="n">extends</span> <span class="no">AppCompatActivity</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">MainActivity</span> <span class="n">extends</span> <span class="no">AppCompatActivity</span> <span class="p">{</span>
 
     <span class="vi">@Override</span>
     <span class="kp">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="no">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
@@ -231,14 +228,13 @@ name就是需要新建的xml文件的名字，第二个参数为操作模式，�
         <span class="no">Log</span><span class="p">.</span><span class="nf">i</span><span class="p">(</span><span class="s2">"mainActivity"</span><span class="p">,</span><span class="n">sharedPreferences</span><span class="p">.</span><span class="nf">getInt</span><span class="p">(</span><span class="s2">"key"</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">""</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="kp">public</span> <span class="n">void</span> <span class="n">startOther</span><span class="p">(</span><span class="no">View</span> <span class="n">view</span><span class="p">){</span>
-        <span class="no">Intent</span> <span class="n">intent</span><span class="o">=</span><span class="kp">new</span> <span class="no">Intent</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="no">OtherActivity</span><span class="p">.</span><span class="nf">class</span><span class="p">);</span>
+        <span class="no">Intent</span> <span class="n">intent</span><span class="o">=</span><span class="n">new</span> <span class="no">Intent</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="no">OtherActivity</span><span class="p">.</span><span class="nf">class</span><span class="p">);</span>
         <span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>OtherActivity中的代码</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="no">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="no">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">super</span><span class="p">.</span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
         <span class="n">setContentView</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">layout</span><span class="p">.</span><span class="nf">activity_other</span><span class="p">);</span>
     <span class="p">}</span>
@@ -246,31 +242,27 @@ name就是需要新建的xml文件的名字，第二个参数为操作模式，�
         <span class="no">SharedPreferences</span> <span class="n">sharedPreferences</span><span class="o">=</span> <span class="no">PreferenceManager</span><span class="p">.</span><span class="nf">getDefaultSharedPreferences</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
         <span class="no">Log</span><span class="p">.</span><span class="nf">i</span><span class="p">(</span><span class="s2">"otherActivity"</span><span class="p">,</span><span class="n">sharedPreferences</span><span class="p">.</span><span class="nf">getInt</span><span class="p">(</span><span class="s2">"key"</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">""</span><span class="p">);</span>
     <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>原理很简单，在mainactivity中首先通过SharedPreferences写入一个值10086
 启动otherActivity来读取这个值并打印
 在回到mainActivity中修改这个值，在otherActivity中获取这个值并打印
 other中第一次获取的值</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">58</span><span class="o">.</span><span class="mi">986</span> <span class="mi">16994</span><span class="o">-</span><span class="mi">16994</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span><span class="ss">:other</span> <span class="no">I</span><span class="o">/</span><span class="ss">otherActivity: </span><span class="mi">10086</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mf">58.986</span> <span class="mi">16994</span><span class="o">-</span><span class="mi">16994</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span><span class="ss">:other</span> <span class="no">I</span><span class="o">/</span><span class="ss">otherActivity: </span><span class="mi">10086</span>
+</code></pre></div></div>
 <p>回到mainActivity中改变里面的值后otherActivity再次获取值</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="o">.</span><span class="mi">629</span> <span class="mi">16098</span><span class="o">-</span><span class="mi">16098</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span> <span class="no">I</span><span class="o">/</span><span class="ss">mainActivity: </span><span class="mi">66666</span>
-<span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">31</span><span class="o">.</span><span class="mi">548</span> <span class="mi">16994</span><span class="o">-</span><span class="mi">16994</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span><span class="ss">:other</span> <span class="no">I</span><span class="o">/</span><span class="ss">otherActivity: </span><span class="mi">10086</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">28.629</span> <span class="mi">16098</span><span class="o">-</span><span class="mi">16098</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span> <span class="no">I</span><span class="o">/</span><span class="ss">mainActivity: </span><span class="mi">66666</span>
+<span class="mo">05</span><span class="o">-</span><span class="mi">09</span> <span class="mi">16</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">31.548</span> <span class="mi">16994</span><span class="o">-</span><span class="mi">16994</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="nf">spring</span><span class="p">.</span><span class="nf">sptest</span><span class="ss">:other</span> <span class="no">I</span><span class="o">/</span><span class="ss">otherActivity: </span><span class="mi">10086</span>
+</code></pre></div></div>
 <p>可以看到，otherActivity中的值并没有做相应的改变
 由此我们可以得出结论：   <br />
 <strong>SharedPreferences对值的操作并非进程同步的</strong>    <br />
 原因就是因为不同进程会分别对SharedPreferences做缓存操作以避免复杂的io操作，整个SharedPreferences的获取流程大概如下</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="err">缓存中存在相应的</span><span class="no">SharedPreferences</span><span class="o">&amp;&amp;</span><span class="n">mode</span><span class="o">==</span><span class="no">MODE_MULTI_PROCESS</span><span class="o">&amp;&amp;</span><span class="n">version</span><span class="o">&lt;</span><span class="no">Android3</span><span class="o">.</span><span class="mi">0</span><span class="p">){</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="err">缓存中存在相应的</span><span class="no">SharedPreferences</span><span class="o">&amp;&amp;</span><span class="n">mode</span><span class="o">==</span><span class="no">MODE_MULTI_PROCESS</span><span class="o">&amp;&amp;</span><span class="n">version</span><span class="o">&lt;</span><span class="no">Android3</span><span class="o">.</span><span class="mi">0</span><span class="p">){</span>
 	<span class="err">直接返回</span><span class="no">SharedPreferences</span><span class="err">对象</span>
 <span class="p">}</span><span class="k">else</span><span class="p">{</span>
 	<span class="err">从硬盘中读取</span><span class="n">xml</span><span class="err">文件并返回</span><span class="no">SharedPreferences</span><span class="err">对象</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>由此可以分析上述代码，由于在内存中已经做了缓存造作，所以otherActivity所在的进程直接返回了缓存中的SharedPreferences对象，导致了读取的值没有改变。解决办法，重启进程重新从硬盘读取xml文件</p>
 
 

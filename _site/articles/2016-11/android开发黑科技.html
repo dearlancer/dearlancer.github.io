@@ -135,14 +135,13 @@
   <article class="post-content">
     <ol>
   <li>处理未捕获异常并获取调用栈信息
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="no">Thread</span><span class="p">.</span><span class="nf">setDefaultUncaughtExceptionHandler</span><span class="p">(</span><span class="kp">new</span> <span class="no">Thread</span><span class="o">.</span><span class="no">UncaughtExceptionHandler</span><span class="p">()</span> <span class="p">{</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="no">Thread</span><span class="p">.</span><span class="nf">setDefaultUncaughtExceptionHandler</span><span class="p">(</span><span class="n">new</span> <span class="no">Thread</span><span class="o">.</span><span class="no">UncaughtExceptionHandler</span><span class="p">()</span> <span class="p">{</span>
          <span class="vi">@Override</span>
          <span class="kp">public</span> <span class="n">void</span> <span class="n">uncaughtException</span><span class="p">(</span><span class="no">Thread</span> <span class="n">t</span><span class="p">,</span> <span class="no">Throwable</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
              <span class="n">t</span><span class="p">.</span><span class="nf">getStackTrace</span><span class="p">();</span>    <span class="err">／／可以获取逐层调用栈地址，返回值为</span><span class="no">StackTraceElement</span><span class="p">[]</span>
          <span class="p">}</span>
  <span class="p">});</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
     <p>StackTraceElement类，其中四个方法getClassName()，getFileName()，getLineNumber()，getMethodName()在调试程序打印Log时非常有用；</p>
   </li>
   <li>
@@ -206,24 +205,22 @@
     <p>在方法返回一个空集合的时候尽可能使用 Collections.emptyList() 和 Collections.emptySet()。Collection 类会返回一个单例空 list 或 set，这样我们就不需要总是创建新的空集合，浪费内存了。</p>
   </li>
   <li>单独运行一个 Gradle 测试
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="p">.</span><span class="nf">/</span><span class="n">gradlew</span> <span class="n">testDebug</span> <span class="o">--</span><span class="n">tests</span><span class="o">=</span><span class="s1">'*.&lt;testname&gt;'</span>
-</code></pre>
-    </div>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">.</span><span class="nf">/</span><span class="n">gradlew</span> <span class="n">testDebug</span> <span class="o">--</span><span class="n">tests</span><span class="o">=</span><span class="s1">'*.&lt;testname&gt;'</span>
+</code></pre></div>    </div>
   </li>
   <li>在开发应用的过程中使用 Strict 模式以确保我们没有在主线程做某些不该做的事情（如耗时任务，网络访问等……），但要注意的是，应用的非 Debug 版本，即 Release 版本所用的代码必须把 Strict 模式关掉，要不然会影响应用性能甚至导致崩溃。
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="no">BuildConfig</span><span class="o">.</span><span class="no">DEBUG</span><span class="p">)</span> <span class="p">{</span>
-<span class="no">StrictMode</span><span class="p">.</span><span class="nf">setVmPolicy</span><span class="p">(</span><span class="kp">new</span> <span class="no">StrictMode</span><span class="o">.</span><span class="no">VmPolicy</span><span class="o">.</span><span class="no">Builder</span><span class="p">()</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="no">BuildConfig</span><span class="o">.</span><span class="no">DEBUG</span><span class="p">)</span> <span class="p">{</span>
+<span class="no">StrictMode</span><span class="p">.</span><span class="nf">setVmPolicy</span><span class="p">(</span><span class="n">new</span> <span class="no">StrictMode</span><span class="o">.</span><span class="no">VmPolicy</span><span class="o">.</span><span class="no">Builder</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">detectAll</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">penaltyLog</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">build</span><span class="p">());</span>
-<span class="no">StrictMode</span><span class="p">.</span><span class="nf">setThreadPolicy</span><span class="p">(</span><span class="kp">new</span> <span class="no">StrictMode</span><span class="o">.</span><span class="no">ThreadPolicy</span><span class="o">.</span><span class="no">Builder</span><span class="p">()</span>
+<span class="no">StrictMode</span><span class="p">.</span><span class="nf">setThreadPolicy</span><span class="p">(</span><span class="n">new</span> <span class="no">StrictMode</span><span class="o">.</span><span class="no">ThreadPolicy</span><span class="o">.</span><span class="no">Builder</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">detectAll</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">penaltyLog</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">penaltyDeathOnNetwork</span><span class="p">()</span>
       <span class="p">.</span><span class="nf">build</span><span class="p">());</span>
     <span class="p">}</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
   <li>android中通过设置alpha来设置view的透明度会导致view绘制两次，可以通过直接设置带透明值的颜色来完成透明view的绘制
  android中颜色值通过十六进制来表示，格式为#alpha R G B  其中alpha值从00到ff 00表示完全透明，ff表示完全不透明 R G B的值也是如此

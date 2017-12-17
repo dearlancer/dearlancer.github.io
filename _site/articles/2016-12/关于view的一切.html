@@ -142,7 +142,7 @@
 
 <h2 id="view的事件分发机制">view的事件分发机制</h2>
 <p>view的事件序列：手指按下屏幕到手指抬起为止</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">activity</span><span class="c1">#dispatchTouchEvent(){</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">activity</span><span class="c1">#dispatchTouchEvent(){</span>
 	<span class="n">viewGroup</span><span class="c1">#dispatchTouchEvent(){</span>
 	    <span class="k">if</span><span class="p">(</span><span class="n">onInterceptTouchEvent</span><span class="p">())</span><span class="n">onTouchExent</span><span class="p">();</span>
 		<span class="k">for</span><span class="p">(</span><span class="no">View</span> <span class="n">childView</span><span class="ss">:childviews</span><span class="p">){</span>
@@ -156,14 +156,13 @@
 	<span class="n">handleEvent</span><span class="p">();</span>	
 	<span class="p">}</span>	
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="view滑动冲突的解决方法">view滑动冲突的解决方法</h2>
 <p>1.外部拦截法：所有的事件都先经过父容器的拦截处理，如果父容器需要此类事件就拦截，否则就不拦截
 通过重写父容器的onInterceptTouchEvent()方法来实现
 代码实现</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">parent</span><span class="c1">#onInterceptEvent(MotionEvent event){</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">parent</span><span class="c1">#onInterceptEvent(MotionEvent event){</span>
 	<span class="n">boolean</span> <span class="n">intercepted</span><span class="o">=</span><span class="kp">false</span><span class="p">;</span>
 	<span class="n">switch</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="nf">getAction</span><span class="p">()){</span>
 		<span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_DOWN</span><span class="p">:</span>
@@ -181,11 +180,10 @@
 			<span class="k">break</span><span class="p">;</span>
 	<span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>2.内部拦截法:父类不处理任何事件，所有事件都传递给子元素，如果子元素需要此事件就直接消耗，否则就交由父容器处理
 代码实现</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">childView</span><span class="c1">#dispatchTouchEvent(MotionEvent event){</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">childView</span><span class="c1">#dispatchTouchEvent(MotionEvent event){</span>
 	<span class="n">switch</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="nf">getAction</span><span class="p">()){</span>
 		<span class="k">case</span> <span class="no">MotionEvent</span><span class="o">.</span><span class="no">ACTION_DOWN</span><span class="p">:</span>
 			<span class="sr">//</span><span class="err">设置父容器不再拦截任何事件</span>
@@ -209,8 +207,7 @@
 	<span class="k">return</span> <span class="kp">true</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="view的工作原理">view的工作原理</h2>
 <p>view的绘制流程</p>
 <ol>

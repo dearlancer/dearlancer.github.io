@@ -136,7 +136,7 @@
     <h1 id="tinker的接入和管理">tinker的接入和管理</h1>
 <p>##SDK接入
 *第一步 添加 gradle 插件依赖</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">buildscript</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">buildscript</span> <span class="p">{</span>
     <span class="n">repositories</span> <span class="p">{</span>
         <span class="n">jcenter</span><span class="p">()</span>
     <span class="p">}</span>
@@ -145,22 +145,20 @@
         <span class="n">classpath</span> <span class="s2">"com.tinkerpatch.sdk:tinkerpatch-gradle-plugin:{tinker-version}"</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>*第二步 集成 TinkerPatch SDK</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">dependencies</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dependencies</span> <span class="p">{</span>
     <span class="sr">//</span> <span class="err">若使用</span><span class="n">annotation</span><span class="err">需要单独引用</span><span class="p">,</span><span class="err">对于</span><span class="n">tinker</span><span class="err">的其他库都无需再引用</span>
     <span class="n">provided</span><span class="p">(</span><span class="s2">"com.tencent.tinker:tinker-android-anno:1.7.7"</span><span class="p">)</span>
     <span class="n">compile</span><span class="p">(</span><span class="s2">"com.tinkerpatch.sdk:tinkerpatch-android-sdk:{tinker-version}"</span><span class="p">)</span>
 <span class="p">}</span>
 
 <span class="n">apply</span> <span class="ss">from: </span><span class="s1">'tinkerpatch.gradle'</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>*第三步 配置 tinkerpatchSupport 参数</p>
 
 <p>打开引入的 tinkerpatch.gradle 文件，它的具体参数如下：</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">tinkerpatchSupport</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tinkerpatchSupport</span> <span class="p">{</span>
     <span class="n">tinkerpatchSupport</span> <span class="p">{</span>
     <span class="sr">/** 可以在debug的时候关闭 tinkerPatch **/</span>
     <span class="n">tinkerEnable</span> <span class="o">=</span> <span class="kp">true</span>
@@ -179,9 +177,8 @@
     <span class="n">baseProguardMappingFile</span> <span class="o">=</span> <span class="s2">"${pathPrefix}/${name}-mapping.txt"</span>
     <span class="n">baseResourceRFile</span> <span class="o">=</span> <span class="s2">"${pathPrefix}/${name}-R.txt"</span>
 <span class="p">}</span>
-</code></pre>
-</div>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">MyApplication</span> <span class="n">extends</span> <span class="no">Application</span><span class="p">{</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">MyApplication</span> <span class="n">extends</span> <span class="no">Application</span><span class="p">{</span>
  <span class="kp">private</span> <span class="no">ApplicationLike</span> <span class="n">tinkerApplicationLike</span><span class="p">;</span>
  <span class="vi">@Override</span>
     <span class="kp">public</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">()</span> <span class="p">{</span>
@@ -204,8 +201,7 @@
         <span class="no">TinkerPatch</span><span class="p">.</span><span class="nf">with</span><span class="p">().</span><span class="nf">setPatchRestartOnSrceenOff</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
         <span class="o">*</span><span class="sr">/
 }
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 <p>第五步 使用步骤</p>
 <ol>
   <li>运行 assembleRelease task 构建基准包，即将要发布的版本；</li>

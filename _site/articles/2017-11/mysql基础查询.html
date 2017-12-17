@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Mysql基础查询操作</title>
+  <meta name="description" content="“mysql 提供的高效便利的检索功能,可以从数据中根据条件检索出符合你预期的数据，类似于去图书馆告诉管理员，我想要一本中文版，搞笑的小黄书。。。”">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Mysql基础查询操作">Mysql基础查询操作</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        22 NOV 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="检索查询数据">检索(查询)数据</h1>
+
+<h2 id="关键字">关键字</h2>
+
+<ul>
+  <li>DISTINCT 唯一性
+检索出数据库中所有不重复的字段
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select distinct title,content from dandan;
+</code></pre></div>    </div>
+  </li>
+  <li>LIMIT 限制检索数量
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan limit 3;
+</code></pre></div>    </div>
+  </li>
+  <li>OFFSET 偏移数量
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan offset 2;
+//返回偏移数量
+</code></pre></div>    </div>
+  </li>
+  <li>ORDER BY 按照列字段排序
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan order by content;
+</code></pre></div>    </div>
+    <p>DESC/ASC 降序/升序排列</p>
+  </li>
+</ul>
+
+<h2 id="检索条件">检索条件</h2>
+
+<p>WHERE 关键字指定查询条件</p>
+
+<ul>
+  <li>组合查询
+AND 与操作 代表两个条件都需要满足
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where id=1 and title = '你好';
+//检索出所有id=1并且title为你好的内容
+</code></pre></div>    </div>
+    <p>OR 或操作 两者满足其一</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where title = '蛋蛋' or content='蛋蛋';
+//检索出所有title为蛋蛋或者content为蛋蛋的内容
+</code></pre></div>    </div>
+    <p>IN 指定条件范围 只有满足指定条件范围的才能被查询</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where content IN ("你好","蛋蛋");
+//查询所有content为你好或者蛋蛋的数据
+</code></pre></div>    </div>
+    <p>NOT 取否操作 否定之后跟随的条件</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where NOT content="蛋蛋";
+等同于
+select * from dandan where content!="蛋蛋";
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="通配符查询模糊查找">通配符查询(模糊查找)</h2>
+
+<p>LIKE 关键字 类似于中文中的像 只需要满足像这个条件就能被匹配</p>
+<ul>
+  <li>% 匹配任意长度 任意字符
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where title like "%蛋%";
+//检索所有title中包含蛋的字符串
+</code></pre></div>    </div>
+  </li>
+  <li>_ 匹配单个字符
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where title like "_蛋";
+//匹配所有两个字，后一个字为蛋的内容
+</code></pre></div>    </div>
+  </li>
+  <li>[] 匹配自定位置的字符集
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where content like ["你","蛋"]_
+//检索所有content以你或者蛋开头的两字内容
+</code></pre></div>    </div>
+  </li>
+  <li>regexp 模糊匹配任意长度的包含某字符的结果
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select * from dandan where content regexp '你好';
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="font-coloryellowpay-attention-模糊匹配的性能相对低应尽量先以精确查找为主font">&lt;font color=yellow&gt;pay attention: 模糊匹配的性能相对低，应尽量先以精确查找为主&lt;/font&gt;</h3>
+
+<h2 id="对字段使用函数">对字段使用函数</h2>
+
+<h3 id="字符串处理">字符串处理</h3>
+
+<ul>
+  <li>trim(),ltrim(),rtrim() 去除空格
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select trim(content) from dandan where id=2;
+//对结果删除空格
+</code></pre></div>    </div>
+  </li>
+  <li>concat(str1,str2,…strn) 连接字符串
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select concat(title,content) from dandan where id=1;
+//检索出结果并连接title和content
+</code></pre></div>    </div>
+  </li>
+  <li>REVERSE(str)反转字符串
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select reverse(title)  from dandan;
+</code></pre></div>    </div>
+  </li>
+  <li>UPPER(str),LOWER(str) 返回大/小写的字符串
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select upper(title) from dandan;
+</code></pre></div>    </div>
+    <h3 id="时间处理">时间处理</h3>
+  </li>
+  <li>day(date) 返回一个日期的天数部分</li>
+  <li>year(date) 返回一个日期的年数部分</li>
+  <li>month(date) 返回一个日期的月份部分</li>
+  <li>time(date) 返回一个日期的时间部分</li>
+  <li>datefweek(date) 返回一个日期是星期几</li>
+  <li>datediff(date1,date2)返回两个日期的天数差</li>
+  <li>date(date) 返回一个日期的日期部分
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select date(date) from dandan;
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="数字处理对列名做处理">数字处理(对列名做处理)</h3>
+<ul>
+  <li>max() 最大值</li>
+  <li>min() 最小值</li>
+  <li>avg() 平均值</li>
+  <li>sum() 总和</li>
+  <li>count() 总数
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select sum(id) from dandan;
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E6%9F%A5%E8%AF%A2" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

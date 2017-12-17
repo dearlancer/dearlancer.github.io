@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Mysql基础类型</title>
+  <meta name="description" content="“数据库相当于一个巨大的图书馆，图书馆中又有很多书架（数据库中的表），这些书架上存放着不同类别的书本（数据库的数据）,每一本个书架上都写着这些书架上书的属性（类别，时间，作者，数量）,这些属性对应着表中的字段，而类别是中文标注的，数量是数字，时间是时间格式，这些对应着的是，每个字段都有自己的数据类型”">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Mysql基础类型">Mysql基础类型</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        19 NOV 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="数据库">数据库</h1>
+
+<ul>
+  <li>创建
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//mysql默认不支持中文,CHARACTER SET utf8代表支持utf8编码也就是支持中文啦
+CREATE DATABASE `dandan` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre></div>    </div>
+  </li>
+  <li>删除
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//高危操作，最好不要知道也不要用
+drop database dandan;
+</code></pre></div>    </div>
+    <h1 id="表">表</h1>
+  </li>
+</ul>
+
+<h2 id="基本数据类型">基本数据类型</h2>
+<ul>
+  <li>Text 类型(可以理解为句子,可包括中文，英文等等)</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>字段</th>
+      <th>描述</th>
+      <th>是否变长</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CHAR(size)</td>
+      <td>保存固定长度的字符串（可包含字母、数字以及特殊字符）。在括号中指定字符串的长度。最多 255 个字符。</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <td>VARCHAR(size)</td>
+      <td>保存可变长度的字符串（可包含字母、数字以及特殊字符）。在括号中指定字符串的最大长度。最多 255 个字符。如果值的长度大于 255，则被转换为 TEXT 类型。</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td>TINYTEXT</td>
+      <td>存放最大长度为 255 个字符的字符串。</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td>TEXT</td>
+      <td>存放最大长度为 65,535 个字符的字符串。</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td>ENUM(x,y,z,etc.)</td>
+      <td>允许你输入可能值的列表。可以在 ENUM 列表中列出最大 65535 个值。如果列表中不存在插入的值，则插入空值。这些值是按照您输入的顺序排序的。可以按照此格式输入可能的值ENUM(‘X’,’Y’,’Z’)</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <td>SET</td>
+      <td>与 ENUM 类似，不同的是，SET 最多只能包含 64 个列表项且 SET 可存储一个以上的选择。</td>
+      <td>否</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Number 类型(也就是数字123456789)</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>字段</th>
+      <th>描述</th>
+      <th>占用字节数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TINYINT(size)</td>
+      <td>-128 到 127 常规。0 到 255 无符号*。在括号中规定最大位数。</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>SMALLINT(size)</td>
+      <td>-32768 到 32767 常规。0 到 65535 无符号*。在括号中规定最大位数。</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>MEDIUMINT(size)</td>
+      <td>-8388608 到 8388607 普通。0 to 16777215 无符号*。在括号中规定最大位数。</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>INT(size)</td>
+      <td>-2147483648 到 2147483647 常规。0 到 4294967295 无符号*。在括号中规定最大位数。</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>BIGINT(size)</td>
+      <td>-9223372036854775808 到 9223372036854775807 常规。0 到 18446744073709551615 无符号*。在括号中规定最大位数。</td>
+      <td>8字节</td>
+    </tr>
+    <tr>
+      <td>FLOAT(size,d)</td>
+      <td>带有浮动小数点的小数字。在 size 参数中规定最大位数。在 d 参数中规定小数点右侧的最大位数。</td>
+      <td>4字节</td>
+    </tr>
+    <tr>
+      <td>DOUBLE(size,d)</td>
+      <td>带有浮动小数点的大数字。在 size 参数中规定最大位数。在 d 参数中规定小数点右侧的最大位数。</td>
+      <td>8字节</td>
+    </tr>
+    <tr>
+      <td>DECIMAL(size,d)</td>
+      <td>作为字符串存储的 DOUBLE 类型，允许固定的小数点。在 size 参数中规定最大位数。在 d 参数中规定小数点右侧的最大位数。</td>
+      <td>decimal是存储为字符串的浮点数</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Number类型的UNSIGNED标注代表不为负</p>
+
+<ul>
+  <li>Date 类型（时间，日期等）</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>字段</th>
+      <th>描述</th>
+      <th>占用字节数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DATE()</td>
+      <td>日期。格式：YYYY-MM-DD 。注释：支持的范围是从 ‘1000-01-01’ 到 ‘9999-12-31’</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>DATETIME()</td>
+      <td>日期和时间的组合。格式：YYYY-MM-DD HH:MM:SS*注释：**支持的范围是从 ‘1000-01-01 00:00:00’ 到 ‘9999-12-31 23:59:59’</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP()</td>
+      <td>时间戳。TIMESTAMP 值使用 Unix 纪元(‘1970-01-01 00:00:00’ UTC) 至今的秒数来存储。格式：YYYY-MM-DD HH:MM:SS*注释：**支持的范围是从 ‘1970-01-01 00:00:01’ UTC 到 ‘2038-01-09 03:14:07’ UTC</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>TIME()</td>
+      <td>时间。格式：HH:MM:SS注释：支持的范围是从 ‘-838:59:59’ 到 ‘838:59:59’</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>YEAR()</td>
+      <td>2 位或 4 位格式的年。注释：4 位格式所允许的值：1901 到 2155。2 位格式所允许的值：70 到 69，表示从 1970 到 2069</td>
+      <td>1字节，代表年份。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="创建表">创建表</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE TABLE table_name (column_name column_type);
+
+//demo
+
+CREATE TABLE IF NOT EXISTS `dandan`(
+   `id` INT UNSIGNED AUTO_INCREMENT,
+   `num` INT DEFAULT 303,
+   `title` VARCHAR(100) NOT NULL COMMENT '标题',
+   `content` VARCHAR(40) NOT NULL COMMENT '内容',
+   `date` datetime DEFAULT now(),
+   PRIMARY KEY ( `id` )
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre></div></div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-11/mysql%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

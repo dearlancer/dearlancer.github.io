@@ -134,9 +134,8 @@
 
   <article class="post-content">
     <p>应用启动过程从用户点击launcher图标到看到第一帧这个过程中，主要会经过以下这些过程：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>main()-&gt;Application:attachBaseContext()-&gt;onCreate()-&gt;Activity:onCreate()-&gt;onStart()-&gt;onPostCreate()-&gt;onResume()-&gt;onPostResume()
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>main()-&gt;Application:attachBaseContext()-&gt;onCreate()-&gt;Activity:onCreate()-&gt;onStart()-&gt;onPostCreate()-&gt;onResume()-&gt;onPostResume()
+</code></pre></div></div>
 <p>而一般我们的初始化任务主要都会集中化在Application:onCreate()方法中，这就使得初始化任务在第一帧绘制之前得完成，这就造成了卡图标、应用启动慢。那么把任务打散呢？分散在LaunchActivity中去分段初始化？还是不行的，因为界面开始绘制是在onResume()方法开始后才开始绘制，所以，得从Activity的创建过程找办法。
 main-&gt;Activity创建的这个过程会经过一系列framework层的操作，这些操作都是系统自动执行的，不易进行优化，不过可以在Activity创建这个过程前后来找一些蛛丝马迹，因为Activity的创建都会辗转到ActivityThread:performLaunchActivity()这个方法中，在这个方法中可以知道这么几件事：</p>
 <ol>
@@ -144,7 +143,7 @@ main-&gt;Activity创建的这个过程会经过一系列framework层的操作，
   <li>再判断Application实例是否已创建，已创建则直接返回，否则调用
 Instrumentation:newApplication()来创建Application实例，在这个过程中会依次执行attachBaseContext()和onCreate()方法</li>
   <li>之后Activity:attach()方法会创建一个PhoneWindow对象，它就是界面，它有一个DecorView，调用setContentView()时会给配置DecorView，其中就会设置一个背景：
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">getContainer</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span><span class="n">getContainer</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
 <span class="n">final</span> <span class="no">Drawable</span> <span class="n">background</span><span class="p">;</span>
 <span class="k">if</span><span class="p">(</span><span class="n">mBackgroundResource!</span><span class="o">=</span><span class="mi">0</span><span class="p">){</span>
   <span class="n">background</span><span class="o">=</span><span class="n">getContext</span><span class="p">().</span><span class="nf">getDrawable</span><span class="p">(</span> <span class="n">mBackgroundResource</span> <span class="p">);</span>  <span class="sr">//</span><span class="err">此处</span><span class="n">background</span><span class="err">来自</span><span class="n">theme</span><span class="err">中设置的</span><span class="n">windowbackgroud</span>
@@ -153,8 +152,7 @@ Instrumentation:newApplication()来创建Application实例，在这个过程中�
 <span class="p">}</span>
 <span class="n">mDecor</span><span class="p">.</span><span class="nf">setWindowBackground</span><span class="p">(</span> <span class="n">background</span> <span class="p">);</span>
 <span class="p">}</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
     <p>我们的View也是add进DecorView中显示，它作为RootView肯定是最先显示，所以可以给它设置个默认背景</p>
   </li>
   <li>最后依次调用Activity的onCreate、onStart等方法</li>
@@ -183,7 +181,7 @@ Instrumentation:newApplication()来创建Application实例，在这个过程中�
 这些Case可能导致的问题是被跳入的界面使用到了未初始化的SDK，可能导致Crash或者数据异常，所以目标页面启动前必须确保SDK已经初始化，这个过程的原因是没有唤起启动页来初始化SDK，可以通过hook newActivity解决，其中判断Application是否初始化和各个SDK是否初始化，并且判断该次启动不来自系统的Launcher。</li>
 </ol>
 
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">HookInstrumentation</span> <span class="n">extends</span> <span class="no">Instrumentation</span><span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">HookInstrumentation</span> <span class="n">extends</span> <span class="no">Instrumentation</span><span class="p">{</span>
     <span class="vi">@Override</span>
     <span class="kp">public</span> <span class="no">Activity</span> <span class="n">newActivity</span><span class="p">(</span><span class="no">ClassLoader</span> <span class="n">cl</span><span class="p">,</span> <span class="no">String</span> <span class="n">className</span><span class="p">,</span> <span class="no">Intent</span> <span class="n">intent</span><span class="p">)</span> <span class="n">throws</span> <span class="no">InstantiationException</span><span class="p">,</span> <span class="no">IllegalAccessException</span><span class="p">,</span> <span class="no">ClassNotFoundException</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">intent</span><span class="p">.</span><span class="nf">hasCategory</span><span class="p">(</span><span class="no">Intent</span><span class="o">.</span><span class="no">CATEGORY_LAUNCHER</span><span class="p">)){</span>
@@ -194,10 +192,9 @@ Instrumentation:newApplication()来创建Application实例，在这个过程中�
         <span class="k">return</span> <span class="k">super</span><span class="p">.</span><span class="nf">newActivity</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">className</span><span class="p">,</span> <span class="n">intent</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>通过反射将原来的Instrumentation hook掉</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">attachContext</span><span class="p">()</span> <span class="n">throws</span> <span class="no">Exception</span><span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kp">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">attachContext</span><span class="p">()</span> <span class="n">throws</span> <span class="no">Exception</span><span class="p">{</span>
         <span class="sr">//</span> <span class="err">先获取到当前的</span><span class="no">ActivityThread</span><span class="err">对象</span>
         <span class="no">Class</span><span class="o">&lt;</span><span class="sc">?&gt;</span> <span class="n">activityThreadClass</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">forName</span><span class="p">(</span><span class="s2">"android.app.ActivityThread"</span><span class="p">);</span>
         <span class="no">Method</span> <span class="n">currentActivityThreadMethod</span> <span class="o">=</span> <span class="n">activityThreadClass</span><span class="p">.</span><span class="nf">getDeclaredMethod</span><span class="p">(</span><span class="s2">"currentActivityThread"</span><span class="p">);</span>
@@ -210,14 +207,13 @@ Instrumentation:newApplication()来创建Application实例，在这个过程中�
         <span class="no">Instrumentation</span> <span class="n">mInstrumentation</span> <span class="o">=</span> <span class="p">(</span><span class="no">Instrumentation</span><span class="p">)</span> <span class="n">mInstrumentationField</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">currentActivityThread</span><span class="p">);</span>
 
         <span class="sr">//</span> <span class="err">创建代理对象</span>
-        <span class="no">Instrumentation</span> <span class="n">hookInstrumentation</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">HookInstrumentation</span><span class="p">();</span>
+        <span class="no">Instrumentation</span> <span class="n">hookInstrumentation</span> <span class="o">=</span> <span class="n">new</span> <span class="no">HookInstrumentation</span><span class="p">();</span>
 
         <span class="sr">//</span> <span class="err">偷梁换柱</span>
         <span class="n">mInstrumentationField</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="n">currentActivityThread</span><span class="p">,</span> <span class="n">hookInstrumentation</span><span class="p">);</span>
     <span class="p">}</span>
-</code></pre>
-</div>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">SdkUntil</span> <span class="p">{</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">SdkUntil</span> <span class="p">{</span>
     <span class="kp">public</span> <span class="n">static</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">initLowSDK</span><span class="p">(){</span>
         <span class="k">if</span><span class="p">(</span><span class="no">InitializeOptimizer</span><span class="p">.</span><span class="nf">isLowSDKInitialized</span><span class="p">()){</span> <span class="sr">//s</span><span class="n">dk</span><span class="err">未初始化</span>
             <span class="k">return</span><span class="p">;</span>
@@ -233,8 +229,7 @@ Instrumentation:newApplication()来创建Application实例，在这个过程中�
        <span class="sr">//</span><span class="err">同上</span>
     <span class="p">}</span>
 <span class="p">}</span>      
-</code></pre>
-</div>
+</code></pre></div></div>
 
   </article>
 </div>

@@ -134,7 +134,7 @@
 
   <article class="post-content">
     <h2 id="dialog代码使用builder模式构建">Dialog代码,使用Builder模式构建</h2>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">XxDialog</span> <span class="n">extends</span> <span class="no">Dialog</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">XxDialog</span> <span class="n">extends</span> <span class="no">Dialog</span> <span class="p">{</span>
     <span class="kp">private</span> <span class="no">Context</span> <span class="n">mContext</span><span class="p">;</span>
     <span class="kp">private</span> <span class="no">String</span> <span class="n">mTitle</span><span class="p">;</span>
     <span class="kp">private</span> <span class="no">String</span> <span class="n">mContent</span><span class="p">;</span>
@@ -187,7 +187,7 @@
         <span class="p">}</span>
 
         <span class="kp">private</span> <span class="no">XxDialog</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
-            <span class="no">XxDialog</span> <span class="n">dialog</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">XxDialog</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
+            <span class="no">XxDialog</span> <span class="n">dialog</span> <span class="o">=</span> <span class="n">new</span> <span class="no">XxDialog</span><span class="p">(</span><span class="n">mContext</span><span class="p">);</span>
             <span class="n">dialog</span><span class="p">.</span><span class="nf">setmTitle</span><span class="p">(</span><span class="n">mTitle</span> <span class="o">!=</span> <span class="n">null</span> <span class="p">?</span> <span class="n">mTitle</span> <span class="p">:</span> <span class="n">mContext</span><span class="p">.</span><span class="nf">getResources</span><span class="p">().</span><span class="nf">getString</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">string</span><span class="p">.</span><span class="nf">dialog_title</span><span class="p">));</span>
             <span class="n">dialog</span><span class="p">.</span><span class="nf">setImgId</span><span class="p">(</span><span class="n">imgId</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">?</span> <span class="n">imgId</span> <span class="p">:</span> <span class="no">R</span><span class="p">.</span><span class="nf">drawable</span><span class="p">.</span><span class="nf">dialog_icon</span><span class="p">);</span>
             <span class="n">dialog</span><span class="p">.</span><span class="nf">setmContent</span><span class="p">(</span><span class="n">mContent</span> <span class="o">!=</span> <span class="n">null</span> <span class="p">?</span> <span class="n">mContent</span> <span class="p">:</span> <span class="n">mContext</span><span class="p">.</span><span class="nf">getResources</span><span class="p">().</span><span class="nf">getString</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">string</span><span class="p">.</span><span class="nf">dialog_content</span><span class="p">));</span>
@@ -201,54 +201,44 @@
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="dialog主题属性">Dialog主题属性</h2>
 <p>1.设置Dialog标题,true:显示,false:不显示</p>
 
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowNoTitle"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowNoTitle"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>2.设置对话框的背景颜色</p>
 
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:background"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">white</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:background"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">white</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>3.设置点击dialog以外的区域，dialog是否消失 true:消失,false:不消失</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowCloseOnTouchOutside"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowCloseOnTouchOutside"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>4.是否允许对话框的背景变暗 true:变暗 false:不改变</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimEnabled"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimEnabled"</span><span class="o">&gt;</span><span class="kp">false</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>5.对话框的背景变暗的程度，值越大越暗</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimAmount"</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:backgroundDimAmount"</span><span class="o">&gt;</span><span class="mf">0.3</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>6.dialog的动画效果</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowAnimationStyle"</span><span class="o">&gt;</span><span class="vi">@style</span><span class="o">/</span><span class="n">animation</span><span class="o">&lt;</span><span class="sr">/item&gt;
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowAnimationStyle"</span><span class="o">&gt;</span><span class="vi">@style</span><span class="o">/</span><span class="n">animation</span><span class="o">&lt;</span><span class="sr">/item&gt;
 进入/</span><span class="err">退出动画</span> 
 <span class="o">&lt;</span><span class="n">style</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"animation"</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"windowEnterAnimation"</span><span class="o">&gt;</span><span class="vi">@anim</span><span class="o">/</span><span class="n">dialog_enter</span><span class="o">&lt;</span><span class="sr">/item&gt;
     &lt;item name="windowExitAnimation"&gt;@anim/</span><span class="n">dialog_exit</span><span class="o">&lt;</span><span class="sr">/item&gt;
 &lt;/s</span><span class="n">tyle</span><span class="o">&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>7.设置dialog的背景颜色</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowBackground"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowBackground"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>8.Dialog的windowFrame框<br />
 值为null时，Dialog边框显示为透明</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowFrame"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowFrame"</span><span class="o">&gt;</span><span class="vi">@android</span><span class="ss">:color</span><span class="o">/</span><span class="n">holo_red_dark</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 <p>9.是否悬浮在activity上</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowIsFloating"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
-</span></code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">item</span> <span class="nb">name</span><span class="o">=</span><span class="s2">"android:windowIsFloating"</span><span class="o">&gt;</span><span class="kp">true</span><span class="o">&lt;</span><span class="sr">/item&gt;
+</span></code></pre></div></div>
 
   </article>
 </div>

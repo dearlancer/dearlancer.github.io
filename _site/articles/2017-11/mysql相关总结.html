@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Mysql入门常用命令</title>
+  <meta name="description" content="“mysql 命令是 MySQL 数据库的客户端应用程序，用于解释执行 SQL 语句">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+         
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="Mysql入门常用命令">Mysql入门常用命令</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        25 NOV 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h1 id="sql-的六种子语言">SQL 的六种子语言</h1>
+<h3 id="ddldata-definition-language数据定义语言">DDL（Data Definition Language，数据定义语言）</h3>
+<ul>
+  <li>CREATE - 创建
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#创建数据库
+mysql&gt; create database [databasename];
+#创建数据表
+mysql&gt; create table [ 表名] ( [ 字段名 1] [ 类型 1] [is null] [key] [default value] [extra] [comment],
+...
+)[engine] [charset];
+</code></pre></div>    </div>
+  </li>
+  <li>ALTER - 修改
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#自增长
+mysql&gt; alter table [tablename] auto_increment=[value];
+#新增列
+mysql&gt;alter table [tablename] add column [columnname] [columdefinition];
+#删除列
+mysql&gt;alter table [tablename] drop column [columnname];
+#修改列属性
+mysql&gt;alter table [tablename] change [columnname] [newcolumnname] [type];
+#修改列属性
+mysql&gt; alter table [tablename] modify [columnname] [newdefinition];
+#添加索引
+mysql&gt; alter table [tablename] add index [indexname](字段名 1,字段名 2…);
+#删除索引
+mysql&gt; alter table [tablename] drop index [indexname];删除索引
+</code></pre></div>    </div>
+  </li>
+  <li>DROP - 删除
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#删除数据库
+mysql&gt; drop database [databasename];
+#删除数据表
+mysql&gt; drop table [tablename];
+</code></pre></div>    </div>
+  </li>
+  <li>TRUNCATE - 截断</li>
+  <li>COMMENT - 注释</li>
+  <li>RENAME - 重命名
+    <h3 id="dqldata-query-language数据查询语言">DQL（Data Query Language，数据查询语言）</h3>
+  </li>
+  <li>SELECT-从数据库表中获取数据</li>
+  <li>FROM - 指定从哪个数据表或者子查询中查询</li>
+  <li>WHERE - 指定查询条件</li>
+  <li>GROUP BY - 结合合计函数，根据一个或多个列对结果集进行分组</li>
+  <li>HAVING - 对分组后的结果集进行筛选</li>
+  <li>ORDER BY - 对结果集进行排序</li>
+  <li>LIMIT - 对结果集进行 top 限制输出</li>
+  <li>UNION - 结果集纵向联合</li>
+  <li>JOIN - 结果集横向拼接</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#查询记录
+mysql&gt; SELECT [列名称] FROM [表名称] where [condition]
+#查询语句执行顺序
+&lt;SELECT clause&gt; [&lt;FROM clause&gt;] [&lt;WHERE clause&gt;] [&lt;GROUP BY clause&gt;] [&lt;HAVING clause&gt;] [&lt;ORDER BY clause&gt;] [&lt;LIMIT clause&gt;]
+</code></pre></div></div>
+<h3 id="dmldata-manipulation-language数据操作语言">DML（Data Manipulation Language，数据操作语言）</h3>
+<ul>
+  <li>UPDATE - 更新数据库表中的数据
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#修改记录
+mysql&gt; UPDATE [ 表名称] SET [ 列名称]=[ 新值] WHERE [ 条件];
+</code></pre></div>    </div>
+  </li>
+  <li>DELETE - 从数据库表中删除数据
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#删除记录
+mysql&gt; delete from [tablename] where [condition];
+</code></pre></div>    </div>
+  </li>
+  <li>INSERT INTO - 向数据库表中插入数据
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#插入记录
+mysql&gt; insert into [tablename](column1,column2,...) values(value1,value2,...);
+</code></pre></div>    </div>
+  </li>
+  <li>LOAD - 载入数据
+    <h3 id="dcldata-control-language数据控制语言">DCL（Data Control Language，数据控制语言）</h3>
+  </li>
+  <li>CREATE 新建
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#新建用户
+mysql&gt; create user [username]@[host] identified by [password];
+</code></pre></div>    </div>
+  </li>
+  <li>DROP 删除
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#删除用户
+mysql&gt; DROP USER [username]@[host];
+</code></pre></div>    </div>
+  </li>
+  <li>GRANT - 授权
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#命令格式
+mysql&gt; GRANT [privileges] ON [databasename].[tablename] TO [username]@[host];
+</code></pre></div>    </div>
+  </li>
+  <li>REVOKE - 撤销授权
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#命令格式
+mysql&gt; REVOKE [privileges] ON [databasename].[tablename] FROM [username]@[host];
+</code></pre></div>    </div>
+  </li>
+  <li>DENY - 拒绝授权
+    <h3 id="tcltransaction-control-language事务控制语言">TCL（Transaction Control Language，事务控制语言）</h3>
+  </li>
+  <li>START TRANSACTION 或 BEGIN - 开始事务</li>
+  <li>SAVEPOINT - 在事务中设置保存点，可以回滚到此处</li>
+  <li>ROLLBACK - 回滚</li>
+  <li>COMMIT - 提交</li>
+  <li>SET TRANSACTION – 改变事务选项
+    <h3 id="cclcursor-control-language游标控制语言">CCL（Cursor Control Language，游标控制语言）</h3>
+  </li>
+  <li>DECLARE CURSOR - 申明游标</li>
+  <li>OPEN CURSOR - 打开游标</li>
+  <li>FETCH INTO - 取值</li>
+  <li>UPDATE WHERE CURRENT - 更新游标所在的值</li>
+  <li>CLOSE CURSOR - 关闭游标</li>
+</ul>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-11/mysql%E7%9B%B8%E5%85%B3%E6%80%BB%E7%BB%93" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2017 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

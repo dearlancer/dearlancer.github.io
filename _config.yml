@@ -9,7 +9,7 @@ description: 不为繁华易匠心
 url: # the base hostname & protocol for your site
 author: 王志成
 paginate: 10
-gems: [Jekyll-paginate]
+plugins: [Jekyll-paginate]
 
 #
 ###################################

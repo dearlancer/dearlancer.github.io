@@ -139,7 +139,7 @@
 <h1 id="安装">安装</h1>
 <p>直接通过 yum install nginx 肯定是不行的,因为yum没有nginx，所以首先把 nginx 的源加入 yum 中</p>
 
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">//</span> <span class="mi">1</span><span class="o">.</span><span class="err">将</span><span class="n">nginx</span><span class="err">放到</span><span class="n">yum</span> <span class="n">repro</span><span class="err">库中</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span> <span class="mi">1</span><span class="o">.</span><span class="err">将</span><span class="n">nginx</span><span class="err">放到</span><span class="n">yum</span> <span class="n">repro</span><span class="err">库中</span>
 <span class="n">rpm</span> <span class="o">-</span><span class="n">ivh</span> <span class="n">http</span><span class="ss">:/</span><span class="o">/</span><span class="n">nginx</span><span class="p">.</span><span class="nf">org</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">centos</span><span class="o">/</span><span class="mi">7</span><span class="o">/</span><span class="n">noarch</span><span class="o">/</span><span class="no">RPMS</span><span class="o">/</span><span class="n">nginx</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">centos</span><span class="o">-</span><span class="mi">7</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="nf">el7</span><span class="p">.</span><span class="nf">ngx</span><span class="p">.</span><span class="nf">noarch</span><span class="p">.</span><span class="nf">rpm</span>
 <span class="sr">//</span> <span class="mi">2</span><span class="o">.</span><span class="err">执行查询操作，这时候库应该有</span><span class="n">nginx</span><span class="err">了</span>
 <span class="n">yum</span> <span class="n">info</span> <span class="n">nginx</span>
@@ -150,15 +150,14 @@
 <span class="sr">//</span> <span class="mi">5</span><span class="o">.</span>  <span class="err">启动</span><span class="n">nginx</span>
 <span class="n">service</span> <span class="n">nginx</span> <span class="n">start</span>
 <span class="sr">//</span><span class="err">这时候通过公网</span><span class="n">ip</span><span class="err">直接访问就可以显示出</span><span class="n">nginx</span><span class="err">的映射了</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="配置">配置</h1>
 <p>默认的配置文件在 /etc/nginx/nginx.conf中
 但是不建议在这个文件中直接修改/etc/nginx/conf.d/目录中，可以新建自己的配置文件***.conf</p>
 
 <p>配置文件的编写</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">server</span> <span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">server</span> <span class="p">{</span>
     <span class="n">listen</span> <span class="mi">8888</span><span class="p">;</span>      <span class="sr">//</span><span class="err">监听的端口号</span>
     <span class="n">server_name</span> <span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">;</span>    <span class="sr">//</span><span class="err">映射的域名</span>
 
@@ -168,12 +167,12 @@
     <span class="n">index</span>      <span class="n">index</span><span class="p">.</span><span class="nf">html</span><span class="p">;</span>        <span class="sr">//</span><span class="err">映射的主页</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span><span class="err">启用反向代理</span>       <span class="err">主要作用：把服务器所监听的端口映射到</span><span class="n">nginx</span><span class="err">端口上，这里把服务器设置要代理的</span> <span class="n">uri</span><span class="err">比如（</span><span class="mi">127</span><span class="o">.</span><span class="mi">116</span><span class="o">.</span><span class="mi">60</span><span class="p">:</span><span class="mi">5200</span><span class="err">）映射到</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="o">/</span><span class="n">api</span><span class="err">上</span>
+    <span class="sr">//</span><span class="err">启用反向代理</span>       <span class="err">主要作用：把服务器所监听的端口映射到</span><span class="n">nginx</span><span class="err">端口上，这里把服务器设置要代理的</span> <span class="n">uri</span><span class="err">比如（</span><span class="mf">127.116</span><span class="o">.</span><span class="mi">60</span><span class="p">:</span><span class="mi">5200</span><span class="err">）映射到</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="o">/</span><span class="n">api</span><span class="err">上</span>
     <span class="n">location</span> <span class="sr">/api{
             proxy_pass http:/</span><span class="o">/</span><span class="n">ip</span><span class="p">:</span><span class="err">端口号</span><span class="p">;</span>          <span class="c1">#设置要代理的 uri</span>
             <span class="n">proxy_set_header</span> <span class="no">X</span><span class="o">-</span><span class="no">Real</span><span class="o">-</span><span class="no">IP</span> <span class="vg">$remote_addr</span><span class="p">;</span>
             <span class="n">proxy_set_header</span> <span class="no">X</span><span class="o">-</span><span class="no">Scheme</span> <span class="vg">$scheme</span><span class="p">;</span>
-            <span class="n">proxy_http_version</span> <span class="mi">1</span><span class="o">.</span><span class="mi">1</span><span class="p">;</span>
+            <span class="n">proxy_http_version</span> <span class="mf">1.1</span><span class="p">;</span>
             <span class="n">proxy_set_header</span> <span class="no">Connection</span> <span class="s2">""</span><span class="p">;</span>
             <span class="n">proxy_set_header</span> <span class="no">Host</span> <span class="vg">$http_host</span><span class="p">;</span>
 
@@ -189,8 +188,7 @@
 
 <span class="sr">//</span><span class="err">配置完</span><span class="n">conf</span><span class="err">文件后可以执行</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">nginx</span> <span class="o">-</span><span class="n">t</span>  <span class="err">来查看配置文件是否正确</span><span class="p">,</span><span class="err">检查如果返回</span><span class="n">ok</span><span class="err">，则说明修改文件没有出现任何错误</span>
 <span class="sr">//se</span><span class="n">rvice</span> <span class="n">nginx</span> <span class="n">reload</span><span class="err">重新加载</span><span class="n">nginx</span><span class="err">配置</span><span class="p">,</span><span class="err">访问</span><span class="n">example</span><span class="p">.</span><span class="nf">com</span><span class="p">:</span><span class="mi">8888</span><span class="err">可以加载指定的</span><span class="n">deinx</span><span class="err">主页</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
   </article>
 </div>

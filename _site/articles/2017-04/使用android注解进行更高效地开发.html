@@ -135,9 +135,8 @@
   <article class="post-content">
     <h1 id="使用andrid注解进行更高效地开发">使用andrid注解进行更高效地开发</h1>
 <p>在使用之前，先引入annotations库</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">compile</span> <span class="s1">'com.android.support:support-annotations:{version}'</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">compile</span> <span class="s1">'com.android.support:support-annotations:{version}'</span>
+</code></pre></div></div>
 <h2 id="空值判断注解">空值判断注解</h2>
 <ol>
   <li>@Nullable
@@ -145,14 +144,13 @@
   <li>@NonNull
 使用NonNull修饰的参数不能取null值,如果赋予了null值，ide将会警告我们
 举个栗子
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span><span class="p">{</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Test</span><span class="p">{</span>
  <span class="kp">private</span> <span class="n">int</span> <span class="n">num</span><span class="p">;</span>
  <span class="kp">public</span> <span class="n">void</span> <span class="n">setNum</span><span class="p">(</span><span class="vi">@NonNull</span> <span class="n">int</span> <span class="n">n</span><span class="p">){</span>
      <span class="n">this</span><span class="p">.</span><span class="nf">num</span><span class="o">=</span><span class="n">n</span><span class="p">;</span>
  <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -189,7 +187,7 @@
   <li>@IntDef
 定义一组整数型枚举值,假如传入或者返回的值不是枚举中的值的时候，ide将给出提示
 举个栗子：
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">IntDefTest</span><span class="p">{</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">IntDefTest</span><span class="p">{</span>
  <span class="kp">private</span> <span class="n">int</span> <span class="n">result</span><span class="p">;</span>
  <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">NO</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
  <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">YES</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
@@ -205,31 +203,27 @@
      <span class="n">this</span><span class="p">.</span><span class="nf">result</span><span class="o">=</span><span class="n">r</span><span class="p">;</span>
  <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
   <li>@StringDef
 定义一组String类型的枚举值，用法与@IntDef相同
 ##权限注解
 如果你的方法的调用需要调用者有特定的权限，你可以使用@RequiresPermission注解
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">SET_WALLPAPER</span><span class="p">)</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">SET_WALLPAPER</span><span class="p">)</span>
 <span class="kp">public</span> <span class="n">abstract</span> <span class="n">void</span> <span class="n">setWallpaper</span><span class="p">(</span><span class="no">Bitmap</span> <span class="n">bitmap</span><span class="p">)</span> <span class="n">throws</span> <span class="no">IOException</span><span class="p">;</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
     <p>如果你至少需要权限集合中的一个，你可以使用anyOf属性：</p>
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="n">anyOf</span> <span class="o">=</span> <span class="p">{</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="n">anyOf</span> <span class="o">=</span> <span class="p">{</span>
  <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">ACCESS_COARSE_LOCATION</span><span class="p">,</span>
  <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">ACCESS_FINE_LOCATION</span><span class="p">})</span>
 <span class="kp">public</span> <span class="n">abstract</span> <span class="no">Location</span> <span class="n">getLastKnownLocation</span><span class="p">(</span><span class="no">String</span> <span class="n">provider</span><span class="p">);</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
     <p>如果你同时需要多个权限，你可以用allOf属性</p>
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="n">allOf</span> <span class="o">=</span> <span class="p">{</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@RequiresPermission</span><span class="p">(</span><span class="n">allOf</span> <span class="o">=</span> <span class="p">{</span>
  <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">READ_HISTORY_BOOKMARKS</span><span class="p">,</span>
  <span class="no">Manifest</span><span class="p">.</span><span class="nf">permission</span><span class="o">.</span><span class="no">WRITE_HISTORY_BOOKMARKS</span><span class="p">})</span>
 <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="n">void</span> <span class="n">updateVisitedHistory</span><span class="p">(</span><span class="no">ContentResolver</span> <span class="n">cr</span><span class="p">,</span> <span class="no">String</span> <span class="n">url</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">real</span><span class="p">);</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
 </ol>
 
@@ -249,10 +243,9 @@
   <li>@CheckResult 检测返回值
 如果你的方法返回一个值，你期望调用者用这个值做些事情，那么你可以使用@CheckResult注解标注这个方法。<br />
 Android中，Context#checkPermission这个方法已经被@CheckResult标注了:
-    <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="err">@</span><span class="p">(</span><span class="n">suggest</span><span class="o">=</span><span class="s2">"#enforcePermission(String,int,int,String)"</span><span class="p">)</span>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">@</span><span class="p">(</span><span class="n">suggest</span><span class="o">=</span><span class="s2">"#enforcePermission(String,int,int,String)"</span><span class="p">)</span>
 <span class="kp">public</span> <span class="n">abstract</span> <span class="n">int</span> <span class="n">checkPermission</span><span class="p">(</span><span class="vi">@NonNull</span> <span class="no">String</span> <span class="n">permission</span><span class="p">,</span> <span class="n">int</span> <span class="n">pid</span><span class="p">,</span> <span class="n">int</span> <span class="n">uid</span><span class="p">)</span>
-</code></pre>
-    </div>
+</code></pre></div>    </div>
     <p>这是非常重要的，因为有些使用context.checkPermission的开发者认为他们已经执行了一个权限 —但其实这个方法仅仅只做了检查并且反馈一个是否成功的值而已。如果开发者使用了这个方法，但是又不用其返回值，那么这个开发者真正想调用的可能是这个Context#enforcePermission方法，而不是checkPermission。</p>
   </li>
 </ol>

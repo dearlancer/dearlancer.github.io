@@ -144,55 +144,51 @@
 类 占用资源过多不宜创建多个实例，比如IO操作和数据库访问等</p>
 <h2 id="饿汉模式">饿汉模式</h2>
 <p>在类首次加载到内存的时候就被初始化,不管是否使用都会初始化</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
-     <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+     <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">new</span>  <span class="no">Singleton</span><span class="p">();</span>
 
      <span class="kp">public</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">getInstance</span><span class="p">(){</span>
           <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
      <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="懒汉模式">懒汉模式</h2>
 <p>首次使用时被初始化,每次调用都会进行同步,会消耗不必要的资源,造成不必要的同步开销</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
      <span class="kp">private</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">instance</span><span class="o">=</span><span class="n">null</span><span class="p">;</span>
      <span class="kp">public</span> <span class="n">static</span> <span class="n">synchronized</span>  <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span>
           <span class="k">if</span><span class="p">(</span><span class="n">instance</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
-           <span class="n">instance</span><span class="o">=</span><span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+           <span class="n">instance</span><span class="o">=</span><span class="n">new</span>  <span class="no">Singleton</span><span class="p">();</span>
           <span class="p">}</span>
                <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
      <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="double-check-lockdcl推荐使用">Double Check Lock(DCL)（推荐使用）</h2>
 <p>优点：资源利用率高,效率高 缺点：高并发的环境下小概率发生，第一次加载略慢，jdk1.5版本一下无法确保顺序</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
      <span class="kp">private</span> <span class="n">static</span>  <span class="no">Singleton</span> <span class="n">instance</span><span class="o">=</span><span class="n">null</span><span class="p">;</span>
      <span class="kp">public</span> <span class="n">ststic</span> <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span>
           <span class="k">if</span><span class="p">(</span><span class="n">instance</span><span class="o">==</span><span class="n">null</span><span class="p">){</span>
             <span class="n">synchronized</span> <span class="p">(</span> <span class="no">Singleton</span> <span class="p">.</span><span class="nf">class</span><span class="p">){</span>
-              <span class="k">if</span><span class="p">(</span> <span class="n">instance</span><span class="o">==</span><span class="n">null</span> <span class="p">)</span><span class="n">instance</span><span class="o">=</span><span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+              <span class="k">if</span><span class="p">(</span> <span class="n">instance</span><span class="o">==</span><span class="n">null</span> <span class="p">)</span><span class="n">instance</span><span class="o">=</span><span class="n">new</span>  <span class="no">Singleton</span><span class="p">();</span>
              <span class="p">}</span>
           <span class="p">}</span>
        <span class="k">return</span> <span class="n">instance</span><span class="p">;</span>
      <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 <h2 id="静态内部类单例模式推荐使用">静态内部类单例模式(推荐使用)</h2>
 <p>适用场景，构造函数无参数</p>
-<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">Singleton</span><span class="p">{</span>
       <span class="kp">public</span> <span class="n">ststic</span> <span class="no">Singleton</span>  <span class="n">getInstance</span><span class="p">(){</span> <span class="sr">//</span><span class="err">第一次调用</span> <span class="no">Singleton</span><span class="err">类时不会加载，只有在</span> <span class="n">getInstance</span><span class="err">调用时才会初始化，线程安全，同时延迟了单例的实例化</span>
       <span class="k">return</span>  <span class="no">SingletonHolder</span><span class="p">.</span><span class="nf">instance</span><span class="p">;</span>
      <span class="p">}</span>
      <span class="kp">private</span> <span class="n">static</span> <span class="k">class</span>  <span class="nc">SingletonHolder</span><span class="p">{</span><span class="sr">//</span><span class="err">静态内部类</span>
-      <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="kp">new</span>  <span class="no">Singleton</span><span class="p">();</span>
+      <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span>  <span class="no">Singleton</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">new</span>  <span class="no">Singleton</span><span class="p">();</span>
      <span class="p">}</span>
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
   </article>
 </div>
