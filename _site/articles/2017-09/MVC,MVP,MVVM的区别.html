@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>MVC,MVP,MVVM的区别</title>
+  <meta name="description" content="">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+           
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="MVC,MVP,MVVM的区别">MVC,MVP,MVVM的区别</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        14 SEP 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="mvc">MVC</h2>
+
+<h4 id="软件可以分为三部分">软件可以分为三部分</h4>
+
+<ul>
+  <li>视图（View）:用户界面</li>
+  <li>控制器（Controller）:业务逻辑</li>
+  <li>模型（Model）:数据保存</li>
+</ul>
+
+<h4 id="各部分之间的通信方式如下">各部分之间的通信方式如下：</h4>
+
+<ol>
+  <li>View传送指令到Controller</li>
+  <li>Controller完成业务逻辑后，要求Model改变状态</li>
+  <li>Model将新的数据发送到View，用户得到反馈</li>
+</ol>
+
+<h4 id="tips所有的通信都是单向的">Tips：所有的通信都是单向的。</h4>
+
+<h3 id="互动模式">互动模式</h3>
+<ul>
+  <li>接受用户指令时，MVC可以分为两种方式。</li>
+  <li>一种是通过View接受指令，传递给Controller。</li>
+  <li>另一种是直接通过Controller接受指令</li>
+</ul>
+
+<h2 id="mvp">MVP</h2>
+
+<p>MVP模式将Controller改名为Presenter，同时改变了通信方向。</p>
+
+<ol>
+  <li>各部分之间的通信，都是双向的</li>
+  <li>View和Model不发生联系，都通过Presenter传递</li>
+  <li>View非常薄，不部署任何业务逻辑，称为”被动视图”(Passive View)，即没有任何主动性，而Presenter非常厚，所有逻辑都部署在那里。</li>
+</ol>
+
+<p><img src="http://www.jcodecraeer.com/uploads/20150313/1426239008578777.png" alt="mvc和mvp的区别" /></p>
+
+<p>mvp不适合代码量庞大，业务逻辑很复杂的项目，随着类的增加，后期维护的困难会急剧上升</p>
+
+<h2 id="mvvm">MVVM</h2>
+
+<h4 id="相同点">相同点</h4>
+<ul>
+  <li>MVVM模式将Presenter改名为ViewModel，基本上与MVP模式完全一致。</li>
+</ul>
+
+<h4 id="不同">不同</h4>
+<ul>
+  <li>唯一的区别是，它采用双向绑定(data-binding)：View的变动，自动反映在ViewModel，反之亦然。</li>
+</ul>
+
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-09/MVC,MVP,MVVM%E7%9A%84%E5%8C%BA%E5%88%AB" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

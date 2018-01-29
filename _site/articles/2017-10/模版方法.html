@@ -6,14 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>标签</title>
-  <meta name="description" content="不为繁华易匠心">
+  <title>模版方法模式</title>
+  <meta name="description" content="">
 
   <!-- CSS files -->
   <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
   <link rel="stylesheet" href="http://localhost:4000/css/main.css">
 
-  <link rel="canonical" href="http://localhost:4000/tags/">
+  <link rel="canonical" href="http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95">
   <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
 
   <!-- Icons -->
@@ -107,28 +107,76 @@
     </div>
     <div class="col s12 m9">
       <div class="post-listing">
-          <div id="page">
-    <header class="page-header">
-      <h2>标签</h2>
-    </header>
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
 
-    <article class="page-content">
-      <h5>Tag cloud <i class="fa fa-cloud info-text-color"></i></h5>
-<ul class="tag-cloud">
 
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="模版方法模式">模版方法模式</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        12 OCT 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="使用场景">使用场景</h2>
+<ul>
+  <li>多个子类有公有的方法，并且逻辑基本相同时</li>
+  <li>重要，核心的算法，可以把核心算法设计为模板方法，周边的相关细节可以由子类来实现</li>
 </ul>
 
-<div class="tag-list">
+<h2 id="栗子">栗子：</h2>
+<p>最常用的那么简单就不要栗子了吧，BaseActivity，BaseFragment，BaseViewholder都是模板方法
+流程封装，把某个固定的流程封装费到一个final函数中，并且让子类可以定制实现这个流程中的某个或者所有步骤</p>
 
+<h3 id="优点">优点：</h3>
+<ul>
+  <li>封装不变部分，扩展可变部分</li>
+  <li>提取公共方法，便于维护
+    <h3 id="缺点">缺点：</h3>
+  </li>
+  <li>阅读困难？跟进代码就好了</li>
+</ul>
+
+  </article>
 </div>
 
-    </article>
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
 
 
-  </div><!-- end page content -->
-
-
-  
 
         <footer>
   &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>

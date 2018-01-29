@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>源码分析之AsyncTask源码</title>
+  <meta name="description" content="AsyncTask是android中最常使用的一个线程类，它将UI线程和子线程区分开来，我们可以在doInbackground中执行耗时操作，并且在onProgressUpdate和onPostExecute中执行UI操作，它很好地帮我们封装了线程切换的逻辑，使得我们可以方便地使用。">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+           
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="源码分析之AsyncTask源码">源码分析之AsyncTask源码</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        28 JAN 2018
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    8 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h3 id="一个简单的栗子">一个简单的栗子</h3>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">new</span> <span class="no">AsyncTask</span><span class="o">&lt;</span><span class="no">Void</span><span class="p">,</span> <span class="no">Integer</span><span class="p">,</span> <span class="no">Boolean</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="no">Boolean</span> <span class="n">doInBackground</span><span class="p">(</span><span class="no">Void</span><span class="o">...</span> <span class="n">voids</span><span class="p">)</span> <span class="p">{</span>
+              <span class="sr">//</span><span class="err">在子线程中运行的代码</span>
+                <span class="k">return</span> <span class="n">null</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="n">void</span> <span class="n">onPreExecute</span><span class="p">()</span> <span class="p">{</span>
+              <span class="sr">//</span><span class="err">后台任务开始执行之间调用，用于进行一些界面上的初始化操作</span>
+                <span class="k">super</span><span class="p">.</span><span class="nf">onPreExecute</span><span class="p">();</span>
+            <span class="p">}</span>
+
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="n">void</span> <span class="n">onPostExecute</span><span class="p">(</span><span class="no">Boolean</span> <span class="n">aBoolean</span><span class="p">)</span> <span class="p">{</span>
+              <span class="sr">//</span><span class="err">后台任务执行完后调用，可以提示执行的结果</span>
+                <span class="k">super</span><span class="p">.</span><span class="nf">onPostExecute</span><span class="p">(</span><span class="n">aBoolean</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="n">void</span> <span class="n">onProgressUpdate</span><span class="p">(</span><span class="no">Integer</span><span class="o">...</span> <span class="n">values</span><span class="p">)</span> <span class="p">{</span>
+              <span class="sr">//</span><span class="err">可以在这里更新</span><span class="no">UI</span><span class="err">进度的操作</span>
+                <span class="k">super</span><span class="p">.</span><span class="nf">onProgressUpdate</span><span class="p">(</span><span class="n">values</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="n">void</span> <span class="n">onCancelled</span><span class="p">(</span><span class="no">Boolean</span> <span class="n">aBoolean</span><span class="p">)</span> <span class="p">{</span>
+              <span class="sr">//</span><span class="err">取消操作</span>
+                <span class="k">super</span><span class="p">.</span><span class="nf">onCancelled</span><span class="p">(</span><span class="n">aBoolean</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="vi">@Override</span>
+            <span class="kp">protected</span> <span class="n">void</span> <span class="n">onCancelled</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">super</span><span class="p">.</span><span class="nf">onCancelled</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">}.</span><span class="nf">execute</span><span class="p">();</span>
+</code></pre></div></div>
+<h3 id="源码剖析">源码剖析</h3>
+
+<ol>
+  <li>先从类的静态块开始看起
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">CPU_COUNT</span> <span class="o">=</span> <span class="no">Runtime</span><span class="p">.</span><span class="nf">getRuntime</span><span class="p">().</span><span class="nf">availableProcessors</span><span class="p">();</span>
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">CORE_POOL_SIZE</span> <span class="o">=</span> <span class="no">Math</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="no">Math</span><span class="p">.</span><span class="nf">min</span><span class="p">(</span><span class="no">CPU_COUNT</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">MAXIMUM_POOL_SIZE</span> <span class="o">=</span> <span class="no">CPU_COUNT</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">KEEP_ALIVE_SECONDS</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="no">ThreadFactory</span> <span class="n">sThreadFactory</span> <span class="o">=</span> <span class="n">new</span> <span class="no">ThreadFactory</span><span class="p">()</span> <span class="p">{</span>
+     <span class="kp">private</span> <span class="n">final</span> <span class="no">AtomicInteger</span> <span class="n">mCount</span> <span class="o">=</span> <span class="n">new</span> <span class="no">AtomicInteger</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+     <span class="kp">public</span> <span class="no">Thread</span> <span class="n">newThread</span><span class="p">(</span><span class="no">Runnable</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">return</span> <span class="n">new</span> <span class="no">Thread</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">"AsyncTask #"</span> <span class="o">+</span> <span class="n">mCount</span><span class="p">.</span><span class="nf">getAndIncrement</span><span class="p">());</span>
+     <span class="p">}</span>
+ <span class="p">};</span>
+
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="no">BlockingQueue</span><span class="o">&lt;</span><span class="no">Runnable</span><span class="o">&gt;</span> <span class="n">sPoolWorkQueue</span> <span class="o">=</span>
+         <span class="n">new</span> <span class="no">LinkedBlockingQueue</span><span class="o">&lt;</span><span class="no">Runnable</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">128</span><span class="p">);</span>
+
+ <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="no">Executor</span> <span class="no">THREAD_POOL_EXECUTOR</span><span class="p">;</span>
+
+ <span class="n">static</span> <span class="p">{</span>
+     <span class="no">ThreadPoolExecutor</span> <span class="n">threadPoolExecutor</span> <span class="o">=</span> <span class="n">new</span> <span class="no">ThreadPoolExecutor</span><span class="p">(</span>
+             <span class="no">CORE_POOL_SIZE</span><span class="p">,</span> <span class="no">MAXIMUM_POOL_SIZE</span><span class="p">,</span> <span class="no">KEEP_ALIVE_SECONDS</span><span class="p">,</span> <span class="no">TimeUnit</span><span class="o">.</span><span class="no">SECONDS</span><span class="p">,</span>
+             <span class="n">sPoolWorkQueue</span><span class="p">,</span> <span class="n">sThreadFactory</span><span class="p">);</span>
+     <span class="n">threadPoolExecutor</span><span class="p">.</span><span class="nf">allowCoreThreadTimeOut</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+     <span class="no">THREAD_POOL_EXECUTOR</span> <span class="o">=</span> <span class="n">threadPoolExecutor</span><span class="p">;</span>
+ <span class="p">}</span>
+
+ <span class="kp">public</span> <span class="n">static</span> <span class="n">final</span> <span class="no">Executor</span> <span class="no">SERIAL_EXECUTOR</span> <span class="o">=</span> <span class="n">new</span> <span class="no">SerialExecutor</span><span class="p">();</span>
+ <span class="kp">private</span> <span class="n">static</span> <span class="n">volatile</span> <span class="no">Executor</span> <span class="n">sDefaultExecutor</span> <span class="o">=</span> <span class="no">SERIAL_EXECUTOR</span><span class="p">;</span>
+</code></pre></div>    </div>
+    <p>可以看到，AsyncTask一次可以执行的最大线程数为Math.max(2, Math.min(CPU_COUNT - 1, 4))个，队列中一次最多只能存储128个线程，并且构造了一个线程池来管理可能执行的任务，
+这里有个细节，可以看静态块中的代码，THREAD_POOL_EXECUTOR是在新建实例并执行完allowCoreThreadTimeOut函数后才指向这个实例的地址的，这样的好处是保证了状态的初始化。</p>
+  </li>
+  <li>然后是构造函数,所有的构造函数最终都是调用这个进行构造实例：
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="no">AsyncTask</span><span class="p">(</span><span class="vi">@Nullable</span> <span class="no">Looper</span> <span class="n">callbackLooper</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">mHandler</span> <span class="o">=</span> <span class="n">callbackLooper</span> <span class="o">==</span> <span class="n">null</span> <span class="o">||</span> <span class="n">callbackLooper</span> <span class="o">==</span> <span class="no">Looper</span><span class="p">.</span><span class="nf">getMainLooper</span><span class="p">()</span>
+         <span class="p">?</span> <span class="n">getMainHandler</span><span class="p">()</span>
+         <span class="p">:</span> <span class="n">new</span> <span class="no">Handler</span><span class="p">(</span><span class="n">callbackLooper</span><span class="p">);</span>
+
+     <span class="n">mWorker</span> <span class="o">=</span> <span class="n">new</span> <span class="no">WorkerRunnable</span><span class="o">&lt;</span><span class="no">Params</span><span class="p">,</span> <span class="no">Result</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">{</span>
+         <span class="kp">public</span> <span class="no">Result</span> <span class="n">call</span><span class="p">()</span> <span class="n">throws</span> <span class="no">Exception</span> <span class="p">{</span>
+             <span class="n">mTaskInvoked</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+             <span class="no">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+             <span class="n">try</span> <span class="p">{</span>
+                 <span class="no">Process</span><span class="p">.</span><span class="nf">setThreadPriority</span><span class="p">(</span><span class="no">Process</span><span class="o">.</span><span class="no">THREAD_PRIORITY_BACKGROUND</span><span class="p">);</span>
+                 <span class="sr">//noins</span><span class="n">pection</span> <span class="n">unchecked</span>
+                 <span class="n">result</span> <span class="o">=</span> <span class="n">doInBackground</span><span class="p">(</span><span class="n">mParams</span><span class="p">);</span>
+                 <span class="no">Binder</span><span class="p">.</span><span class="nf">flushPendingCommands</span><span class="p">();</span>
+             <span class="p">}</span> <span class="kp">catch</span> <span class="p">(</span><span class="no">Throwable</span> <span class="n">tr</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="n">mCancelled</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="kp">true</span><span class="p">);</span>
+                 <span class="kp">throw</span> <span class="n">tr</span><span class="p">;</span>
+             <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+                 <span class="n">postResult</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+             <span class="p">}</span>
+             <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+         <span class="p">}</span>
+     <span class="p">};</span>
+
+     <span class="n">mFuture</span> <span class="o">=</span> <span class="n">new</span> <span class="no">FutureTask</span><span class="o">&lt;</span><span class="no">Result</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mWorker</span><span class="p">)</span> <span class="p">{</span>
+         <span class="vi">@Override</span>
+         <span class="kp">protected</span> <span class="n">void</span> <span class="n">done</span><span class="p">()</span> <span class="p">{</span>
+             <span class="n">try</span> <span class="p">{</span>
+                 <span class="n">postResultIfNotInvoked</span><span class="p">(</span><span class="n">get</span><span class="p">());</span>
+             <span class="p">}</span> <span class="kp">catch</span> <span class="p">(</span><span class="no">InterruptedException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="n">android</span><span class="p">.</span><span class="nf">util</span><span class="o">.</span><span class="no">Log</span><span class="p">.</span><span class="nf">w</span><span class="p">(</span><span class="no">LOG_TAG</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+             <span class="p">}</span> <span class="kp">catch</span> <span class="p">(</span><span class="no">ExecutionException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="kp">throw</span> <span class="n">new</span> <span class="no">RuntimeException</span><span class="p">(</span><span class="s2">"An error occurred while executing doInBackground()"</span><span class="p">,</span>
+                         <span class="n">e</span><span class="p">.</span><span class="nf">getCause</span><span class="p">());</span>
+             <span class="p">}</span> <span class="kp">catch</span> <span class="p">(</span><span class="no">CancellationException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="n">postResultIfNotInvoked</span><span class="p">(</span><span class="n">null</span><span class="p">);</span>
+             <span class="p">}</span>
+         <span class="p">}</span>
+     <span class="p">};</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+    <p>整个构造流程主要分为三步：</p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p>获取handler
+如果传入的looper为null或者为主线程，则把引用指向主线程的hanlder，否则则通过传入的looper构造一个hanlder</p>
+  </li>
+  <li>
+    <p>初始化mWorker
+WorkerRunnable实际为一个Callback接口的包装类，在callback的基础上封装了可传入的参数</p>
+  </li>
+  <li>
+    <p>初始化mFuture
+FutureTask实际是一个Runnable和Future接口的实现类，通过Future的包装使得Runnable在完成后可以返回一个结果</p>
+  </li>
+</ul>
+
+<ol>
+  <li>接着是excute()函数
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="vi">@MainThread</span>
+ <span class="kp">public</span> <span class="n">final</span> <span class="no">AsyncTask</span><span class="o">&lt;</span><span class="no">Params</span><span class="p">,</span> <span class="no">Progress</span><span class="p">,</span> <span class="no">Result</span><span class="o">&gt;</span> <span class="n">execute</span><span class="p">(</span><span class="no">Params</span><span class="o">...</span> <span class="n">params</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="n">executeOnExecutor</span><span class="p">(</span><span class="n">sDefaultExecutor</span><span class="p">,</span> <span class="n">params</span><span class="p">);</span>
+ <span class="p">}</span>
+<span class="vi">@MainThread</span>
+ <span class="kp">public</span> <span class="n">final</span> <span class="no">AsyncTask</span><span class="o">&lt;</span><span class="no">Params</span><span class="p">,</span> <span class="no">Progress</span><span class="p">,</span> <span class="no">Result</span><span class="o">&gt;</span> <span class="n">executeOnExecutor</span><span class="p">(</span><span class="no">Executor</span> <span class="nb">exec</span><span class="p">,</span>
+         <span class="no">Params</span><span class="o">...</span> <span class="n">params</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">mStatus</span> <span class="o">!=</span> <span class="no">Status</span><span class="o">.</span><span class="no">PENDING</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">switch</span> <span class="p">(</span><span class="n">mStatus</span><span class="p">)</span> <span class="p">{</span>
+             <span class="k">case</span> <span class="no">RUNNING</span><span class="p">:</span>
+                 <span class="kp">throw</span> <span class="n">new</span> <span class="no">IllegalStateException</span><span class="p">(</span><span class="s2">"Cannot execute task:"</span>
+                         <span class="o">+</span> <span class="s2">" the task is already running."</span><span class="p">);</span>
+             <span class="k">case</span> <span class="no">FINISHED</span><span class="p">:</span>
+                 <span class="kp">throw</span> <span class="n">new</span> <span class="no">IllegalStateException</span><span class="p">(</span><span class="s2">"Cannot execute task:"</span>
+                         <span class="o">+</span> <span class="s2">" the task has already been executed "</span>
+                         <span class="o">+</span> <span class="s2">"(a task can be executed only once)"</span><span class="p">);</span>
+         <span class="p">}</span>
+     <span class="p">}</span>
+     <span class="n">mStatus</span> <span class="o">=</span> <span class="no">Status</span><span class="o">.</span><span class="no">RUNNING</span><span class="p">;</span>
+     <span class="n">onPreExecute</span><span class="p">();</span>
+     <span class="n">mWorker</span><span class="p">.</span><span class="nf">mParams</span> <span class="o">=</span> <span class="n">params</span><span class="p">;</span>
+     <span class="nb">exec</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="n">mFuture</span><span class="p">);</span>
+     <span class="k">return</span> <span class="n">this</span><span class="p">;</span>
+ <span class="p">}</span>  
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>可以看到，execute函数是在必须在主线程中被调用的，这个函数实际调用的是executeOnExecutor函数，
+在executeOnExecutor函数中，onPreExecute先被执行，然后是参数的赋值操作，最后是通过excutor来执行mFuture，
+切换到子线程中进行工作，excutor的实现者如下</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">private</span> <span class="n">static</span> <span class="k">class</span> <span class="nc">SerialExecutor</span> <span class="n">implements</span> <span class="no">Executor</span> <span class="p">{</span>
+        <span class="n">final</span> <span class="no">ArrayDeque</span><span class="o">&lt;</span><span class="no">Runnable</span><span class="o">&gt;</span> <span class="n">mTasks</span> <span class="o">=</span> <span class="n">new</span> <span class="no">ArrayDeque</span><span class="o">&lt;</span><span class="no">Runnable</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="no">Runnable</span> <span class="n">mActive</span><span class="p">;</span>
+
+        <span class="kp">public</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">execute</span><span class="p">(</span><span class="n">final</span> <span class="no">Runnable</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">mTasks</span><span class="p">.</span><span class="nf">offer</span><span class="p">(</span><span class="n">new</span> <span class="no">Runnable</span><span class="p">()</span> <span class="p">{</span>
+                <span class="kp">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="n">try</span> <span class="p">{</span>
+                        <span class="n">r</span><span class="p">.</span><span class="nf">run</span><span class="p">();</span>
+                    <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+                        <span class="n">scheduleNext</span><span class="p">();</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">mActive</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">scheduleNext</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kp">protected</span> <span class="n">synchronized</span> <span class="n">void</span> <span class="n">scheduleNext</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">mActive</span> <span class="o">=</span> <span class="n">mTasks</span><span class="p">.</span><span class="nf">poll</span><span class="p">())</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="no">THREAD_POOL_EXECUTOR</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="n">mActive</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+<p>可以看到，这里的SerialExecutor会执行mFutrue的run方法，而mFuture的通过mFuture = new FutureTask<Result>(mWorker)这里的代码包装了doInBackground函数，最后会执行这个函数，SerialExecutor是使用ArrayDeque这个队列来管理Runnable对象的，如果我们一次性启动了很多个任务，首先在第一次运行execute()方法的时候，会调用ArrayDeque的offer()方法将传入的Runnable对象添加到队列的尾部，然后判断mActive对象是不是等于null，第一次运行当然是等于null了，于是会调用scheduleNext()方法。在这个方法中会从队列的头部取值，并赋值给mActive对象，然后调用THREAD_POOL_EXECUTOR去执行取出的取出的Runnable对象，之后如果又有新的任务被执行，同样还会调用offer()方法将传入的Runnable添加到队列的尾部，但是再去给mActive对象做非空检查的时候就会发现mActive对象已经不再是null了，于是就不会再调用scheduleNext()方法而是直接启动run方法。
+这是Futrue中的源码</Result></p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">!=</span> <span class="no">NEW</span> <span class="o">||</span>
+            <span class="o">!</span><span class="no">U</span><span class="p">.</span><span class="nf">compareAndSwapObject</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="no">RUNNER</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">currentThread</span><span class="p">()))</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="n">try</span> <span class="p">{</span>
+            <span class="no">Callable</span><span class="o">&lt;</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">callable</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="n">null</span> <span class="o">&amp;&amp;</span> <span class="n">state</span> <span class="o">==</span> <span class="no">NEW</span><span class="p">)</span> <span class="p">{</span>
+                <span class="no">V</span> <span class="n">result</span><span class="p">;</span>
+                <span class="n">boolean</span> <span class="n">ran</span><span class="p">;</span>
+                <span class="n">try</span> <span class="p">{</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">c</span><span class="p">.</span><span class="nf">call</span><span class="p">();</span>
+                    <span class="n">ran</span> <span class="o">=</span> <span class="kp">true</span><span class="p">;</span>
+                <span class="p">}</span> <span class="kp">catch</span> <span class="p">(</span><span class="no">Throwable</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+                    <span class="n">ran</span> <span class="o">=</span> <span class="kp">false</span><span class="p">;</span>
+                    <span class="n">setException</span><span class="p">(</span><span class="n">ex</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">ran</span><span class="p">)</span>
+                    <span class="n">set</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+            <span class="sr">//</span> <span class="n">runner</span> <span class="n">must</span> <span class="n">be</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="k">until</span> <span class="n">state</span> <span class="n">is</span> <span class="n">settled</span> <span class="n">to</span>
+            <span class="sr">//</span> <span class="n">prevent</span> <span class="n">concurrent</span> <span class="n">calls</span> <span class="n">to</span> <span class="n">run</span><span class="p">()</span>
+            <span class="n">runner</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+            <span class="sr">//</span> <span class="n">state</span> <span class="n">must</span> <span class="n">be</span> <span class="n">re</span><span class="o">-</span><span class="n">read</span> <span class="n">after</span> <span class="n">nulling</span> <span class="n">runner</span> <span class="n">to</span> <span class="n">prevent</span>
+            <span class="sr">//</span> <span class="n">leaked</span> <span class="n">interrupts</span>
+            <span class="n">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">state</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">&gt;=</span> <span class="no">INTERRUPTING</span><span class="p">)</span>
+                <span class="n">handlePossibleCancellationInterrupt</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+<p>这里的callback对象正是传入的worker对象，通过执行worker的call方法，正式调用了doInBackground和postResult函数，
+doInBackground会在这个子线程中执行耗时任务，而postResult则是通过InternalHandler来发送一个Message消息为MESSAGE_POST_PROGRESS给主线程，通知进行UI更新也就是执行onProgressUpdate函数，
+当任务执行完毕后，以同样的方式来通过MESSAGE_POST_RESULT消息来通知结果，最后，在finish函数中执行onPostExecute函数。</p>
+
+<h3 id="总结">总结：</h3>
+<p>AsyncTask的内部封装了两个线程池(SerialExecutor和THREAD_POOL_EXECUTOR)和一个Handler(InternalHandler)。
+整体的逻辑是，SerialExecutor线程池用于任务的排队，让需要执行的多个耗时任务，按顺序排列，用来保证任务的串行性，THREAD_POOL_EXECUTOR线程池才真正地执行任务，InternalHandler用于从工作线程切换到主线程。
+另，默认情况下AsyncTask的执行效果是串行的，因为有了SerialExecutor类来维持保证队列的串行。如果想使用并行执行任务，那么可以直接跳过SerialExecutor类，使用executeOnExecutor()来执行任务。</p>
+
+<h3 id="注意">注意</h3>
+<p>非静态AsyncTask创建时会默认持有一个Activity或者Fragment的引用，所以务必在onDestory中手动调用cancel(boolean)方法来释放，防止内存泄漏</p>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2018-01/AsyncTask%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

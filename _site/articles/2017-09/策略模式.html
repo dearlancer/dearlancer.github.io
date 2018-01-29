@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>策略模式</title>
+  <meta name="description" content="">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+           
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="策略模式">策略模式</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        15 SEP 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="适用场景">适用场景：</h2>
+<p>需要使用大量的if-else语句进行操作时，使用策略模式可以使代码逻辑更清晰</p>
+<ul>
+  <li>优点：结构清晰，聚合度低，数据安全、</li>
+  <li>缺点：策略增加，子类也会变多</li>
+</ul>
+
+<p>例子：</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kp">public</span> <span class="n">interface</span> <span class="no">CalculateStrategy</span><span class="p">{</span>
+     <span class="n">int</span> <span class="n">calculatePrice</span><span class="p">(</span><span class="n">int</span> <span class="n">km</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">BusStrategy</span> <span class="n">implements</span>  <span class="no">CalculateStrategy</span><span class="p">{</span>
+   <span class="vi">@Override</span>
+      <span class="n">int</span> <span class="n">calculatePrice</span><span class="p">(</span><span class="n">int</span> <span class="n">km</span><span class="p">){</span>
+          <span class="sr">//</span><span class="err">公交车的计价方式</span>
+       <span class="p">}</span>
+<span class="p">}</span>
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">SubwayStrategy</span> <span class="n">implements</span>  <span class="no">CalculateStrategy</span><span class="p">{</span>
+   <span class="vi">@Override</span>
+      <span class="n">int</span> <span class="n">calculatePrice</span><span class="p">(</span><span class="n">int</span> <span class="n">km</span><span class="p">){</span>
+          <span class="sr">//</span><span class="err">地铁的计价方式</span>
+       <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">扮演</span><span class="no">Context</span><span class="err">的角色类</span>
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">TransficCalclate</span><span class="p">{</span>
+     <span class="no">CalculateStrategy</span> <span class="n">mCalc</span><span class="p">;</span>
+     <span class="kp">public</span>  <span class="no">TransficCalclate</span><span class="p">(</span> <span class="no">CalculateStrategy</span>  <span class="n">calculateStrategy</span><span class="p">){</span>
+     <span class="n">mCalc</span><span class="o">=</span> <span class="n">calculateStrategy</span><span class="p">;</span>
+     <span class="p">}</span>
+     <span class="kp">public</span> <span class="n">int</span> <span class="n">calculatePrice</span><span class="p">(</span><span class="n">int</span> <span class="n">km</span><span class="p">){</span>
+          <span class="sr">//</span><span class="err">计价</span>
+           <span class="k">return</span> <span class="n">mClac</span><span class="p">.</span> <span class="nf">calculatePrice</span><span class="p">(</span><span class="n">km</span><span class="p">);</span>
+       <span class="p">}</span>
+<span class="p">}</span>
+<span class="sr">//</span><span class="err">使用时只需传入相应对象，就可以计算出对应价格</span>
+</code></pre></div></div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-09/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>

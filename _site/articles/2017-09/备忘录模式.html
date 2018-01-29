@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>备忘录模式</title>
+  <meta name="description" content="">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+           
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="备忘录模式">备忘录模式</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        12 SEP 2017
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    2 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="使用场景">使用场景</h2>
+<p>需要保存某个场景在某个时刻的状态
+一个对象不希望外界直接访问其内部对象，可以通过一个中介访问其内部对象</p>
+
+<h2 id="栗子">栗子：</h2>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="k">class</span> <span class="nc">NoteEditText</span> <span class="n">extends</span> <span class="no">EditText</span><span class="p">{</span>
+	<span class="sr">//</span><span class="err">笔记本编辑类</span>
+	<span class="kp">public</span> <span class="no">NoteEditText</span><span class="p">(</span><span class="no">Context</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">super</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+	<span class="sr">//</span> <span class="no">TODO</span> <span class="no">Auto</span><span class="o">-</span><span class="n">generated</span> <span class="n">constructor</span> <span class="n">stub</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="no">Memote</span> <span class="n">createMemote</span><span class="p">(){</span>
+	<span class="no">Memote</span> <span class="n">memote</span><span class="o">=</span><span class="n">new</span> <span class="no">Memote</span><span class="p">();</span>
+	<span class="n">memote</span><span class="p">.</span><span class="nf">text</span><span class="o">=</span><span class="n">this</span><span class="p">.</span><span class="nf">getText</span><span class="p">().</span><span class="nf">toString</span><span class="p">();</span>
+	<span class="n">memote</span><span class="p">.</span><span class="nf">cursor</span><span class="o">=</span><span class="n">getSelectionStart</span><span class="p">();</span>
+	<span class="k">return</span> <span class="n">memote</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="n">void</span> <span class="n">restore</span><span class="p">(</span><span class="no">Memote</span> <span class="n">memote</span><span class="p">){</span>
+	<span class="n">setText</span><span class="p">(</span><span class="n">memote</span><span class="p">.</span><span class="nf">text</span><span class="p">);</span>
+	<span class="n">setSelection</span><span class="p">(</span><span class="n">memote</span><span class="p">.</span><span class="nf">cursor</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">备忘录</span>
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">Memote</span> <span class="p">{</span>
+  <span class="kp">public</span> <span class="no">String</span> <span class="n">text</span><span class="p">;</span>
+  <span class="kp">public</span> <span class="n">int</span> <span class="n">cursor</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">负责管理</span><span class="n">memote</span><span class="err">对象</span>
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">NoteCaretaker</span> <span class="p">{</span>
+	<span class="kp">private</span> <span class="n">static</span> <span class="n">final</span> <span class="n">int</span> <span class="no">MAX</span><span class="o">=</span><span class="mi">20</span><span class="p">;</span>
+	<span class="no">ArrayList</span><span class="o">&lt;</span><span class="no">Memote</span><span class="o">&gt;</span> <span class="n">mList</span><span class="o">=</span><span class="n">new</span> <span class="no">ArrayList</span><span class="o">&lt;</span><span class="no">Memote</span><span class="o">&gt;</span><span class="p">(</span><span class="no">MAX</span><span class="p">);</span>
+	<span class="n">int</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="kp">public</span> <span class="n">void</span> <span class="n">savseMemote</span><span class="p">(</span><span class="no">Memote</span> <span class="n">memote</span><span class="p">){</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">mList</span><span class="p">.</span><span class="nf">size</span><span class="p">()</span><span class="o">&gt;</span><span class="no">MAX</span><span class="p">){</span>
+		<span class="n">mList</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="n">mList</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">memote</span><span class="p">);</span>
+<span class="n">index</span><span class="o">=</span><span class="n">mList</span><span class="p">.</span><span class="nf">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kp">public</span> <span class="no">Memote</span> <span class="n">getPreMemote</span><span class="p">(){</span>
+	<span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">?</span><span class="o">--</span><span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="p">;</span>
+	<span class="k">return</span> <span class="n">mList</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kp">public</span> <span class="no">Memote</span> <span class="n">getNextMemote</span><span class="p">(){</span>
+	<span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="o">&lt;</span><span class="n">mList</span><span class="p">.</span><span class="nf">size</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">?</span><span class="o">++</span><span class="n">index</span><span class="p">:</span><span class="n">index</span><span class="p">;</span>
+	<span class="k">return</span> <span class="n">mList</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="sr">//</span><span class="err">主函数调用</span>
+<span class="kp">public</span> <span class="k">class</span> <span class="nc">MainActivity</span> <span class="n">extends</span> <span class="no">ActionBarActivity</span> <span class="p">{</span>
+
+<span class="no">NoteEditText</span> <span class="n">noteEditText</span><span class="p">;</span>
+
+  <span class="vi">@Override</span>
+  <span class="kp">protected</span> <span class="n">void</span> <span class="n">onCreate</span><span class="p">(</span><span class="no">Bundle</span> <span class="n">savedInstanceState</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">super</span><span class="p">.</span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">);</span>
+  <span class="n">setContentView</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">layout</span><span class="p">.</span><span class="nf">activity_main</span><span class="p">);</span>
+  <span class="no">NoteCaretaker</span> <span class="n">noteCaretaker</span><span class="o">=</span><span class="n">new</span> <span class="no">NoteCaretaker</span><span class="p">();</span>
+
+  <span class="vi">@OnClick</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">id</span><span class="p">.</span><span class="nf">lastButton</span><span class="p">)</span>
+	<span class="kp">public</span> <span class="n">void</span> <span class="n">onClick</span><span class="p">(</span><span class="no">View</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+		<span class="sr">//</span> <span class="no">TODO</span> <span class="no">Auto</span><span class="o">-</span><span class="n">generated</span> <span class="nb">method</span> <span class="n">stub</span>
+	     <span class="n">noteEditText</span><span class="p">.</span><span class="nf">restore</span><span class="p">(</span><span class="n">noteCaretaker</span><span class="p">.</span><span class="nf">getPreMemote</span><span class="p">()));</span>
+	<span class="p">}</span>
+
+	<span class="vi">@OnClick</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">id</span><span class="p">.</span><span class="nf">saveButton</span><span class="p">)</span>
+	<span class="kp">public</span> <span class="n">void</span> <span class="n">nextMemote</span><span class="p">()</span> <span class="p">{</span>
+		<span class="sr">//</span> <span class="no">TODO</span> <span class="no">Auto</span><span class="o">-</span><span class="n">generated</span> <span class="nb">method</span> <span class="n">stub</span>
+		<span class="n">noteEditText</span><span class="p">.</span><span class="nf">restore</span><span class="p">(</span><span class="n">noteCaretaker</span><span class="p">.</span><span class="nf">getNextMemote</span><span class="p">());</span>
+	<span class="p">}</span>
+	<span class="vi">@OnClick</span><span class="p">(</span><span class="no">R</span><span class="p">.</span><span class="nf">id</span><span class="p">.</span><span class="nf">saveButton</span><span class="p">)</span>
+	<span class="kp">public</span> <span class="n">void</span> <span class="n">saveNote</span><span class="p">(){</span>
+		<span class="n">noteCaretaker</span><span class="p">.</span><span class="nf">savseMemote</span><span class="p">(</span><span class="n">noteEditText</span><span class="p">.</span><span class="nf">createMemote</span><span class="p">());</span>
+	<span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>优点：提供可恢复的状态，方便回退</li>
+  <li>缺点：类的成员过多，会占用大量资源</li>
+</ul>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2017-09/%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
