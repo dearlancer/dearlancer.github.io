@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>android中一些小众的生命周期函数</title>
+  <meta name="description" content="介绍一些在activity中不常使用的小众生命周期函数">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+             
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="android中一些小众的生命周期函数">android中一些小众的生命周期函数</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        4 FEB 2018
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    1 min read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="android中activity的生命周期">Android中activity的生命周期</h2>
+<p>在android开发中，对生命周期的把握和理解是最基础也是最重要的知识点，以往使用中，我们使用的最多的一般是一些主流的生命周期函数，如下：</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">onCreate</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">onStart</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">onResume</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">onPause</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">onstop</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">onDestory</span><span class="p">()</span>
+</code></pre></div></div>
+<p>其实，在activity中还有一些比较小众，但是用好了也很有裨益的生命周期函数。</p>
+<ul>
+  <li>onAttachFragment(Fragment fragment) 该函数会在activity界面每一次重新显示的时候被调用到,在这个时候，你可以获取到对应的fragment引用，在activity中对fragment进行相应操作。</li>
+  <li>onContentChanged 当activity的布局内容变化时被回调，可以在这里执行findView操作</li>
+  <li>onPostCreate(@Nullable Bundle savedInstanceState) 会在每一次onCreate函数被执行的时候调用，执行时期为onStart和onResume之间，同onCreate一样，只在activity初始化的时候被执行一次。</li>
+  <li>onPostResume() 同onPostCreate类似，在onResume执行完毕之后被回调，每一次activity的onresume执行该函数也会被执行，所以同onResume一样，避免在这里做一些初始化或者耗时操作。</li>
+  <li>onAttachedToWindow() activity被添加至Window对象时被回调，只回调一次。</li>
+  <li>onWindowFocusChanged(boolean hasFocus) 当前activity获取或者失去焦点的时候会被回调</li>
+  <li>onUserInteraction() 任何用户操作比如点击，触摸，返回都会出发这个函数的回调</li>
+  <li>onTrimMemory(int level) 我们可以根据传入的等级进行对应的内存释放操作，建议在这个函数中处理那些不需要常驻内存并且占比较大的对象资源，比如图片缓存等。</li>
+  <li>onLowMemory 在低内存的情况下会回调这个函数，在这里释放那些不必要或者占比较大的对象资源</li>
+</ul>
+
+<p>所以整个activity的完整的生命周期如下:</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span><span class="err">正常进入</span><span class="n">activity</span><span class="err">然后点击返回退出</span>
+<span class="n">onCreate</span><span class="o">-&gt;</span><span class="n">onAttachFragment</span><span class="o">-&gt;</span><span class="n">onContentChanged</span><span class="o">-&gt;</span><span class="n">onStart</span><span class="o">-&gt;</span><span class="n">onPostCreate</span><span class="o">-&gt;</span><span class="n">onResume</span><span class="o">-&gt;</span><span class="n">onAttachTowindow</span><span class="o">-&gt;</span><span class="n">onWindowFocusChanged</span><span class="o">-&gt;</span><span class="n">onUserInteraction</span><span class="p">(</span><span class="err">双击返回</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">onPause</span><span class="o">-&gt;</span><span class="n">onWindowFocusChanged</span><span class="o">-&gt;</span><span class="n">onStop</span><span class="o">-&gt;</span><span class="n">onDestroy</span><span class="o">-&gt;</span><span class="n">onDetachedfromWindow</span>
+</code></pre></div></div>
+<p><img src="/img/activity_life.png" alt="activity_life" /></p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span><span class="err">点击</span><span class="n">home</span><span class="err">键进入后台再进入</span>
+<span class="n">onWindowFocusChanged</span><span class="o">-&gt;</span><span class="n">onUserInteraction</span><span class="o">-&gt;</span><span class="n">onPause</span><span class="o">-&gt;</span><span class="n">onStop</span><span class="o">-&gt;</span><span class="n">onTrimMemory</span><span class="o">-&gt;</span><span class="n">onRestart</span><span class="o">-&gt;</span><span class="n">onStart</span><span class="o">-&gt;</span><span class="n">onResume</span><span class="o">-&gt;</span><span class="n">onPostResume</span><span class="o">-&gt;</span><span class="n">onWindowFocusChanged</span>
+</code></pre></div></div>
+<p><img src="/img/activity_pause.png" alt="activity_pause" /></p>
+
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2018-02/android%E4%B8%80%E4%BA%9B%E5%B0%8F%E4%BC%97%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
