@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>HashMap和ConcurrentHashMap的实现原理</title>
+  <meta name="description" content="">
+
+  <!-- CSS files -->
+  <link rel="stylesheet" href="http://localhost:4000/css/font-awesome.min.css">
+  <link rel="stylesheet" href="http://localhost:4000/css/main.css">
+
+  <link rel="canonical" href="http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">
+  <link rel="alternate" type="application/rss+xml" title="我的博客" href="http://localhost:4000/feed.xml" />
+
+  <!-- Icons -->
+  <!-- 16x16 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+  <!-- 32x32 -->
+  <link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+</head>
+
+
+<body>
+  <div class="row">
+    <div class="col s12 m3">
+      <div class="table cover">
+        
+
+<div class="cover-card table-cell table-middle">
+  
+  <img src="http://localhost:4000/img/favicon.png" alt="" class="avatar">
+  
+  <a href="http://localhost:4000/" class="author_name">王志成</a>
+  <span class="author_job">android开发</span>
+  <span class="author_bio mbm">不为繁华易匠心</span>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="http://localhost:4000/">首页</a>
+      </li>
+       
+      <li class="nav-item">
+        <a href="http://localhost:4000/archive/">存档</a>
+      </li>
+          
+      <li class="nav-item">
+        <a href="http://localhost:4000/categories/">分类</a>
+      </li>
+            
+      <li class="nav-item">
+        <a href="http://localhost:4000/tags/">标签</a>
+      </li>
+             
+    </ul>
+  </nav>
+  <script type="text/javascript">
+  // based on http://stackoverflow.com/a/10300743/280842
+  function gen_mail_to_link(hs, subject) {
+    var lhs,rhs;
+    var p = hs.split('@');
+    lhs = p[0];
+    rhs = p[1];
+    document.write("<a class=\"social-link-item\" target=\"_blank\" href=\"mailto");
+    document.write(":" + lhs + "@");
+    document.write(rhs + "?subject=" + subject + "\"><i class=\"fa fa-fw fa-envelope\"></i><\/a>");
+  }
+</script>
+<div class="social-links">
+  <ul>
+    
+      <li>
+      <script>gen_mail_to_link('a_starry_night@126.com', 'Hello from website');</script>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li><a href="http://github.com/dearlancer" class="social-link-item" target="_blank"><i class="fa fa-fw fa-github"></i></a></li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </ul>
+</div>
+
+</div>
+
+      </div>
+    </div>
+    <div class="col s12 m9">
+      <div class="post-listing">
+        <a class="btn" href= "http://localhost:4000/" >
+  首页
+</a>
+
+
+
+<div id="post">
+  <header class="post-header">
+    <h1 title="HashMap和ConcurrentHashMap的实现原理">HashMap和ConcurrentHashMap的实现原理</h1>
+    <span class="post-meta">
+      <span class="post-date">
+        5 FEB 2018
+      </span>
+      •
+      <span class="read-time" title="Estimated read time">
+  
+  
+    8 mins read
+  
+</span>
+
+    </span>
+
+  </header>
+
+  <article class="post-content">
+    <h2 id="线程不安全的hashmap">线程不安全的HashMap</h2>
+<p>常用的底层数据结构主要有数组和链表。数组存储区间连续，占用内存较多，寻址容易，插入和删除困难。链表存储区间离散，占用内存较少，寻址困难，插入和删除容易。
+HashMap要实现的是哈希表的效果，尽量实现O(1)级别的增删改查。它的具体实现则是同时使用了数组和链表，可以认为最外层是一个数组，数组的每个元素是一个链表的表头</p>
+<h3 id="构造">构造</h3>
+<ul>
+  <li>int initialCapacity 数组长度，假如未指定长度，默认构造长度为16的table数组，否则构造指定长度的两倍的长度的数组。</li>
+  <li>负载因子 当数据达到容量*负载因子时，hashMap会主动扩容至原来的两倍。默认为0.75
+    <h3 id="寻址方式">寻址方式</h3>
+    <p>对于新插入的数据或者待读取的数据，HashMap将Key的哈希值对数组长度取模，结果作为该Node在数组中的index。并忘对应index的链表中插入数据。</p>
+    <h3 id="优化的存储方式">优化的存储方式</h3>
+    <p>当链表的长度超过8时，为了寻址和插入等操作的方便，HashMap会把对应index下的链表转换为红黑树进行存储。</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">final</span> <span class="n">void</span> <span class="n">treeifyBin</span><span class="p">(</span><span class="no">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span><span class="p">[]</span> <span class="n">tab</span><span class="p">,</span> <span class="n">int</span> <span class="nb">hash</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">int</span> <span class="n">n</span><span class="p">,</span> <span class="n">index</span><span class="p">;</span> <span class="no">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">e</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">tab</span> <span class="o">==</span> <span class="n">null</span> <span class="o">||</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">tab</span><span class="p">.</span><span class="nf">length</span><span class="p">)</span> <span class="o">&lt;</span> <span class="no">MIN_TREEIFY_CAPACITY</span><span class="p">)</span>
+          <span class="n">resize</span><span class="p">();</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="n">e</span> <span class="o">=</span> <span class="n">tab</span><span class="p">[</span><span class="n">index</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">hash</span><span class="p">])</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+          <span class="no">TreeNode</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">hd</span> <span class="o">=</span> <span class="n">null</span><span class="p">,</span> <span class="n">tl</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+          <span class="k">do</span> <span class="p">{</span>
+              <span class="no">TreeNode</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="nb">p</span> <span class="o">=</span> <span class="n">replacementTreeNode</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+              <span class="k">if</span> <span class="p">(</span><span class="n">tl</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+                  <span class="n">hd</span> <span class="o">=</span> <span class="nb">p</span><span class="p">;</span>
+              <span class="k">else</span> <span class="p">{</span>
+                  <span class="nb">p</span><span class="p">.</span><span class="nf">prev</span> <span class="o">=</span> <span class="n">tl</span><span class="p">;</span>
+                  <span class="n">tl</span><span class="p">.</span><span class="nf">next</span> <span class="o">=</span> <span class="nb">p</span><span class="p">;</span>
+              <span class="p">}</span>
+              <span class="n">tl</span> <span class="o">=</span> <span class="nb">p</span><span class="p">;</span>
+          <span class="p">}</span> <span class="k">while</span> <span class="p">((</span><span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="nf">next</span><span class="p">)</span> <span class="o">!=</span> <span class="n">null</span><span class="p">);</span>
+          <span class="k">if</span> <span class="p">((</span><span class="n">tab</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">hd</span><span class="p">)</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+              <span class="n">hd</span><span class="p">.</span><span class="nf">treeify</span><span class="p">(</span><span class="n">tab</span><span class="p">);</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre></div>    </div>
+    <h3 id="线程不安全的主要原因resize死循环fast-fail">线程不安全的主要原因：resize死循环&amp;Fast-fail</h3>
+    <ol>
+      <li>resize死循环
+当HashMap的size超过Capacity*loadFactor时，需要对HashMap进行扩容。具体方法是，创建一个新的，长度为原来Capacity两倍的数组，保证新的Capacity仍为2的N次方，从而保证上述寻址方式仍适用。同时需要通过如下transfer方法将原来的所有数据全部重新插入（rehash）到新的数组中，如下可见，该HashMap的扩容其实是对链表做一个逆序操作的。当两个线程同时进行resize的时候，很有可能出现链表的死循环问题。
+        <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">void</span> <span class="n">transfer</span><span class="p">(</span><span class="no">Entry</span><span class="p">[]</span> <span class="n">newTable</span><span class="p">,</span> <span class="n">boolean</span> <span class="n">rehash</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">int</span> <span class="n">newCapacity</span> <span class="o">=</span> <span class="n">newTable</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="no">Entry</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="p">:</span> <span class="n">table</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">null</span> <span class="o">!=</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="no">Entry</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="k">next</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="nf">next</span><span class="p">;</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">rehash</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">e</span><span class="p">.</span><span class="nf">hash</span> <span class="o">=</span> <span class="n">null</span> <span class="o">==</span> <span class="n">e</span><span class="p">.</span><span class="nf">key</span> <span class="p">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">hash</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="nf">key</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="n">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">indexFor</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="nf">hash</span><span class="p">,</span> <span class="n">newCapacity</span><span class="p">);</span>
+ <span class="n">e</span><span class="p">.</span><span class="nf">next</span> <span class="o">=</span> <span class="n">newTable</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+ <span class="n">newTable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="p">;</span>
+ <span class="n">e</span> <span class="o">=</span> <span class="k">next</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+      <li>在使用迭代器的过程中如果HashMap被修改，那么ConcurrentModificationException将被抛出，也即Fast-fail策略。
+当HashMap的iterator()方法被调用时，会构造并返回一个新的EntryIterator对象，并将EntryIterator的expectedModCount设置为HashMap的modCount（该变量记录了HashMap被修改的次数）,
+在通过该Iterator的next方法访问下一个Entry时，它会先检查自己的expectedModCount与HashMap的modCount是否相等，如果不相等，说明HashMap被修改，直接抛出ConcurrentModificationException。该Iterator的remove方法也会做类似的检查。该异常的为hashMap主动抛出的，意在提醒用户及早意识到线程安全问题
+        <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">HashIterator</span><span class="p">()</span> <span class="p">{</span>
+<span class="n">expectedModCount</span> <span class="o">=</span> <span class="n">modCount</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="sr">//</span> <span class="n">advance</span> <span class="n">to</span> <span class="n">first</span> <span class="n">entry</span>
+<span class="no">Entry</span><span class="p">[]</span> <span class="n">t</span> <span class="o">=</span> <span class="n">table</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">.</span><span class="nf">length</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="k">next</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">index</span><span class="o">++</span><span class="p">])</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+  <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<h1 id="concurrenthashmap">ConcurrentHashMap</h1>
+<p>ConcurrentHashMap的迭代中主要经历了两种方式的实现：</p>
+<ol>
+  <li>Java 7基于分段锁的ConcurrentHashMap</li>
+  <li>Java 8基于CAS的ConcurrentHashMap
+    <h2 id="java-7基于分段锁的concurrenthashmap">Java 7基于分段锁的ConcurrentHashMap</h2>
+    <p>Java 7中的ConcurrentHashMap的底层数据结构仍然是数组和链表。与HashMap不同的是，ConcurrentHashMap最外层不是一个大的数组，而是一个Segment的数组。每个Segment包含一个与HashMap数据结构差不多的链表数组。
+<img src="/img/jdk1.7_hashMap.png" alt="jdk1.7_hashMap" /></p>
+    <h3 id="寻址方式-1">寻址方式</h3>
+    <p>在读写某个Key时，先取该Key的哈希值。并将哈希值的高N位对Segment个数取模从而得到该Key应该属于哪个Segment，接着如同操作HashMap一样操作这个Segment。为了保证不同的值均匀分布到不同的Segment，需要通过如下方法计算哈希值。</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">private</span> <span class="n">int</span> <span class="nb">hash</span><span class="p">(</span><span class="no">Object</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hashSeed</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">((</span><span class="mi">0</span> <span class="o">!=</span> <span class="n">h</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="n">instanceof</span> <span class="no">String</span><span class="p">))</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">sun</span><span class="p">.</span><span class="nf">misc</span><span class="o">.</span><span class="no">Hashing</span><span class="p">.</span><span class="nf">stringHash32</span><span class="p">((</span><span class="no">String</span><span class="p">)</span> <span class="n">k</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">h</span> <span class="o">^=</span> <span class="n">k</span><span class="p">.</span><span class="nf">hashCode</span><span class="p">();</span>
+  <span class="n">h</span> <span class="o">+=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;&lt;</span>  <span class="mi">15</span><span class="p">)</span> <span class="o">^</span> <span class="mh">0xffffcd7d</span><span class="p">;</span>
+  <span class="n">h</span> <span class="o">^=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="n">h</span> <span class="o">+=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;&lt;</span>   <span class="mi">3</span><span class="p">);</span>
+  <span class="n">h</span> <span class="o">^=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&gt;&gt;&gt;</span>  <span class="mi">6</span><span class="p">);</span>
+  <span class="n">h</span> <span class="o">+=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;&lt;</span>   <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">h</span> <span class="o">^</span> <span class="p">(</span><span class="n">h</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">16</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+    <h3 id="同步方式">同步方式</h3>
+    <p>Segment继承自ReentrantLock，所以我们可以很方便的对每一个Segment上锁。
+对于读操作，获取Key所在的Segment时，需要保证可见性。ConcurrentHashMap使用如下方法保证可见性，取得最新的Segment。</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Segment</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="no">Segment</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span><span class="p">)</span><span class="no">UNSAFE</span><span class="p">.</span><span class="nf">getObjectVolatile</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <p>获取Segment中的Node时也使用了类似方法</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="no">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span><span class="p">)</span> <span class="no">UNSAFE</span><span class="p">.</span><span class="nf">getObjectVolatile</span>
+  <span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="p">((</span><span class="n">long</span><span class="p">)(((</span><span class="n">tab</span><span class="p">.</span><span class="nf">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">h</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="no">TSHIFT</span><span class="p">)</span> <span class="o">+</span> <span class="no">TBASE</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <p>对于写操作，并不要求同时获取所有Segment的锁，因为那样相当于锁住了整个Map。它会先获取该Key-Value对所在的Segment的锁，获取成功后就可以像操作一个普通的HashMap一样操作该Segment，并保证该Segment的安全性。
+同时由于其它Segment的锁并未被获取，因此理论上可支持concurrencyLevel（等于Segment的个数）个线程安全的并发读写</p>
+    <h3 id="size操作">size操作</h3>
+    <p>put、remove和get操作只需要关心一个Segment，而size操作需要遍历所有的Segment才能算出整个Map的大小。为更好支持并发操作，ConcurrentHashMap会在不上锁的前提逐个Segment计算3次size，如果某相邻两次计算获取的所有Segment的更新次数（每个Segment都与HashMap一样通过modCount跟踪自己的修改次数，Segment每修改一次其modCount加一）相等，说明这两次计算过程中无更新操作，则这两次计算出的总size相等，可直接作为最终结果返回。如果这三次计算过程中Map有更新，则对所有Segment加锁重新计算Size.</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kp">public</span> <span class="n">int</span> <span class="n">size</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">final</span> <span class="no">Segment</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span><span class="p">[]</span> <span class="n">segments</span> <span class="o">=</span> <span class="n">this</span><span class="p">.</span><span class="nf">segments</span><span class="p">;</span>
+  <span class="n">int</span> <span class="n">size</span><span class="p">;</span>
+  <span class="n">boolean</span> <span class="n">overflow</span><span class="p">;</span> <span class="sr">//</span> <span class="kp">true</span> <span class="k">if</span> <span class="n">size</span> <span class="n">overflows</span> <span class="mi">32</span> <span class="n">bits</span>
+  <span class="n">long</span> <span class="n">sum</span><span class="p">;</span>         <span class="sr">//</span> <span class="n">sum</span> <span class="n">of</span> <span class="n">modCounts</span>
+  <span class="n">long</span> <span class="n">last</span> <span class="o">=</span> <span class="mi">0</span><span class="no">L</span><span class="p">;</span>   <span class="sr">//</span> <span class="n">previous</span> <span class="n">sum</span>
+  <span class="n">int</span> <span class="n">retries</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="sr">//</span> <span class="n">first</span> <span class="n">iteration</span> <span class="n">isn</span><span class="err">'</span><span class="n">t</span> <span class="k">retry</span>
+  <span class="n">try</span> <span class="p">{</span>
+ <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">retries</span><span class="o">++</span> <span class="o">==</span> <span class="no">RETRIES_BEFORE_LOCK</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">segments</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span>
+       <span class="n">ensureSegment</span><span class="p">(</span><span class="n">j</span><span class="p">).</span><span class="nf">lock</span><span class="p">();</span> <span class="sr">//</span> <span class="n">force</span> <span class="n">creation</span>
+   <span class="p">}</span>
+   <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="no">L</span><span class="p">;</span>
+   <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+   <span class="n">overflow</span> <span class="o">=</span> <span class="kp">false</span><span class="p">;</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">segments</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+     <span class="no">Segment</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">seg</span> <span class="o">=</span> <span class="n">segmentAt</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">seg</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+       <span class="n">sum</span> <span class="o">+=</span> <span class="n">seg</span><span class="p">.</span><span class="nf">modCount</span><span class="p">;</span>
+       <span class="n">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">seg</span><span class="p">.</span><span class="nf">count</span><span class="p">;</span>
+       <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="p">(</span><span class="n">size</span> <span class="o">+=</span> <span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+         <span class="n">overflow</span> <span class="o">=</span> <span class="kp">true</span><span class="p">;</span>
+     <span class="p">}</span>
+   <span class="p">}</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">sum</span> <span class="o">==</span> <span class="n">last</span><span class="p">)</span>
+     <span class="k">break</span><span class="p">;</span>
+   <span class="n">last</span> <span class="o">=</span> <span class="n">sum</span><span class="p">;</span>
+ <span class="p">}</span>
+  <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">retries</span> <span class="o">&gt;</span> <span class="no">RETRIES_BEFORE_LOCK</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">segments</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span>
+     <span class="n">segmentAt</span><span class="p">(</span><span class="n">segments</span><span class="p">,</span> <span class="n">j</span><span class="p">).</span><span class="nf">unlock</span><span class="p">();</span>
+ <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">overflow</span> <span class="p">?</span> <span class="no">Integer</span><span class="o">.</span><span class="no">MAX_VALUE</span> <span class="p">:</span> <span class="n">size</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+    <h3 id="hashmap与jdk17下concurrenthashmap的区别">HashMap与jdk1.7下ConcurrentHashMap的区别</h3>
+    <p>ConcurrentHashMap与HashMap相比，有以下不同点</p>
+  </li>
+  <li>ConcurrentHashMap线程安全，而HashMap非线程安全</li>
+  <li>HashMap允许Key和Value为null，而ConcurrentHashMap不允许</li>
+  <li>HashMap不允许通过Iterator遍历的同时通过HashMap修改（会抛出异常），而ConcurrentHashMap允许该行为，并且该更新对后续的遍历可见
+    <h2 id="java-8基于cas的concurrenthashmap">Java 8基于CAS的ConcurrentHashMap</h2>
+    <h3 id="实现">实现</h3>
+    <p>ConcurrentHashMap在构造上采用了更优秀的CAS操作来保证操作的原子性。对通过对数组和Node中引用使用volatile关键字来保证内存可见性。以及对put操作的
+<img src="/img/jdk1.8_hashMap.png" alt="jdk1.8_hashMap" /></p>
+    <h3 id="寻址方式-2">寻址方式</h3>
+    <p>Java 8的ConcurrentHashMap同样是通过Key的哈希值与数组长度取模确定该Key在数组中的索引。</p>
+    <h3 id="同步方式-1">同步方式</h3>
+    <p>Java 8的ConcurrentHashMap对数组使用volatile保证了内存可见性。并且对Node中的next引用使用同样的方式保证可见行。
+对于put操作，如果Key对应的数组元素为null，则通过CAS操作将其设置为当前值。如果Key对应的数组元素（也即链表表头或者树的根元素）不为null，则对该元素使用synchronized关键字申请锁，然后进行操作。如果该put操作使得当前链表长度超过一定阈值，则将该链表转换为树，从而提高寻址效率。
+对于读操作，由于数组被volatile关键字修饰，因此不用担心数组的可见性问题。同时每个元素是一个Node实例（Java 7中每个元素是一个HashEntry），它的Key值和hash值都由final修饰，不可变更，无须关心它们被修改后的可见性问题。而其Value及对下一个元素的引用由volatile修饰，可见性也有保障。</p>
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">static</span> <span class="k">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="n">implements</span> <span class="no">Map</span><span class="o">.</span><span class="no">Entry</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">final</span> <span class="n">int</span> <span class="nb">hash</span><span class="p">;</span>
+  <span class="n">final</span> <span class="no">K</span> <span class="n">key</span><span class="p">;</span>
+  <span class="n">volatile</span> <span class="no">V</span> <span class="n">val</span><span class="p">;</span>
+  <span class="n">volatile</span> <span class="no">Node</span><span class="o">&lt;</span><span class="no">K</span><span class="p">,</span><span class="no">V</span><span class="o">&gt;</span> <span class="k">next</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+    <h3 id="size操作-1">size操作</h3>
+    <h4 id="put方法和remove方法都会通过addcount方法维护map的size">put方法和remove方法都会通过addCount方法维护Map的size。</h4>
+    <h5 id="putval的逻辑使用了cas操作来进行插入">putVal的逻辑，使用了cas操作来进行插入</h5>
+  </li>
+  <li>检查key/value是否为空，如果为空，则抛异常，否则进行2</li>
+  <li>进入for死循环，进行3</li>
+  <li>检查table是否初始化了，如果没有，则调用initTable()进行初始化然后进行 2，否则进行4</li>
+  <li>根据key的hash值计算出其应该在table中储存的位置i，取出table[i]的节点用f表示。
+ 根据f的不同有如下三种情况：1）如果table[i]==null(即该位置的节点为空，没有发生碰撞)，
+                             则利用CAS操作直接存储在该位置，如果CAS操作成功则退出死循环。
+                             2）如果table[i]!=null(即该位置已经有其它节点，发生碰撞)，碰撞处理也有两种情况
+                                 2.1）检查table[i]的节点的hash是否等于MOVED，如果等于，则检测到正在扩容，则帮助其扩容
+                                 2.2）说明table[i]的节点的hash值不等于MOVED，如果table[i]为链表节点，则将此节点插入链表中即可
+                                     如果table[i]为树节点，则将此节点插入树中即可。插入成功后，进行 5</li>
+  <li>如果table[i]的节点是链表节点，则检查table的第i个位置的链表是否需要转化为数，如果需要则调用treeifyBin函数进行转化
+    <h5 id="remove方法的逻辑如下">remove方法的逻辑如下</h5>
+  </li>
+  <li>先根据key的hash值计算书其在table的位置 i。</li>
+  <li>检查table[i]是否为空，如果为空，则返回null，否则进行3</li>
+  <li>在table[i]存储的链表(或树)中开始遍历比对寻找，如果找到节点符合key的，则判断value是否为null来决定是否是更新oldValue还是删除该节点。</li>
+</ol>
+
+<p>size方法通过sumCount获取由addCount方法维护的Map的size。</p>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kp">public</span> <span class="n">int</span> <span class="n">size</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">long</span> <span class="n">n</span> <span class="o">=</span> <span class="n">sumCount</span><span class="p">();</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="no">L</span><span class="p">)</span> <span class="p">?</span> <span class="mi">0</span> <span class="p">:</span>
+                <span class="p">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">long</span><span class="p">)</span><span class="no">Integer</span><span class="o">.</span><span class="no">MAX_VALUE</span><span class="p">)</span> <span class="p">?</span> <span class="no">Integer</span><span class="o">.</span><span class="no">MAX_VALUE</span> <span class="p">:</span>
+                <span class="p">(</span><span class="n">int</span><span class="p">)</span><span class="n">n</span><span class="p">);</span>
+    <span class="p">}</span>   
+<span class="n">final</span> <span class="n">long</span> <span class="n">sumCount</span><span class="p">()</span> <span class="p">{</span>
+        <span class="no">CounterCell</span><span class="p">[]</span> <span class="n">as</span> <span class="o">=</span> <span class="n">counterCells</span><span class="p">;</span> <span class="no">CounterCell</span> <span class="n">a</span><span class="p">;</span>
+        <span class="n">long</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">baseCount</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">as</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">as</span><span class="p">.</span><span class="nf">length</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">a</span> <span class="o">=</span> <span class="n">as</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
+                    <span class="n">sum</span> <span class="o">+=</span> <span class="n">a</span><span class="p">.</span><span class="nf">value</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+    <span class="p">}</span>    
+</code></pre></div></div>
+
+  </article>
+</div>
+
+<div class="share-buttons">
+  <h6>分享到: </h6>
+  <ul>
+    <li>
+      <a href="https://twitter.com/intent/tweet?text=http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" class="twitter btn" title="Share on Twitter"><i class="fa fa-twitter"></i><span> Twitter</span></a>
+    </li>
+    <li>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" class="facebook btn" title="Share on Facebook"><i class="fa fa-facebook"></i><span> Facebook</span></a>
+    </li>
+    <li>
+      <a href="https://plus.google.com/share?url=http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" class="google-plus btn" title="Share on Google Plus"><i class="fa fa-google-plus"></i><span> Google+</span></a>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/submitlink?u=http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" class="hacker-news btn" title="Share on Hacker News"><i class="fa fa-hacker-news"></i><span> Hacker News</span></a>
+    </li>
+    <li>
+      <a href="https://www.reddit.com/submit?url=http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86" class="reddit btn" title="Share on Reddit"><i class="fa fa-reddit"></i><span> Reddit</span></a>
+    </li>
+  </ul>
+</div><!-- end share-buttons -->
+
+
+
+        <footer>
+  &copy; 2018 王志成.<!-- <a href="">来呀，放肆啊！</a>  --> <i class="fa fa-heart heart-icon"></i>
+</footer>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://localhost:4000/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://localhost:4000/js/main.js"></script>
+
+
+</body>
+</html>
