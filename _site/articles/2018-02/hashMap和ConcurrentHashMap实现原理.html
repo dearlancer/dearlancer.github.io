@@ -343,6 +343,11 @@ HashMap要实现的是哈希表的效果，尽量实现O(1)级别的增删改查
     <span class="p">}</span>    
 </code></pre></div></div>
 
+<h3 id="last-关于hashmap时间复杂度的问题">Last 关于hashMap时间复杂度的问题</h3>
+<p>Hashmap中，get操作的时间复杂度应分为数组查找+链表（树）查询两步
+理论最优化的复杂度为o(1),此时时间复杂度应为o(1)+o(1),也就是默认hash不冲突，实际复杂度应为O（1）+O（n）
+当链表长度超过8时，链表会自动转化为红黑树，此时的时间复杂度为O（1）+O（log n）</p>
+
   </article>
 </div>
 

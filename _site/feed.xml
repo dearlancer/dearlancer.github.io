@@ -5,9 +5,182 @@
     <description>不为繁华易匠心</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 04 Mar 2018 16:49:15 +0100</pubDate>
-    <lastBuildDate>Sun, 04 Mar 2018 16:49:15 +0100</lastBuildDate>
+    <pubDate>Sun, 11 Mar 2018 15:03:18 +0100</pubDate>
+    <lastBuildDate>Sun, 11 Mar 2018 15:03:18 +0100</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
+    
+      <item>
+        <title>使用artifacory部署私有仓库</title>
+        <description>&lt;h2 id=&quot;安装artifactory服务&quot;&gt;安装artifactory服务&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;下载对应系统的安装文件，下载地址(https://jfrog.com/open-source/#solutions)&lt;/li&gt;
+  &lt;li&gt;由于我的是linux系统，所以下载了rpm安装包&lt;/li&gt;
+  &lt;li&gt;执行 rpm -ivh 安装包名称.rpm 执行安装（注意，需要有jdk1.8以上版本）&lt;/li&gt;
+  &lt;li&gt;启动artifactory服务，执行命令 systemctl start artifactory.service&lt;/li&gt;
+  &lt;li&gt;检测你artifactory服务是否开启，lsof -i:8081,或者通过浏览器，打开网址 http://ip:8081/artifactory，初次进入会要求你设置管理员账户密码&lt;/li&gt;
+  &lt;li&gt;以上步骤完成，artifactory服务已经在运行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;配置artifactory服务&quot;&gt;配置artifactory服务&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;首先介绍下仓库的分类，在Art中，repo有三种。本地Local型，远程Remote型，以及虚拟型。&lt;/li&gt;
+  &lt;li&gt;本地私有仓库：用于内部使用，上传的组件不会向外部进行同步。&lt;/li&gt;
+  &lt;li&gt;远程仓库：用于代理及缓存公共仓库，不能向此类型的仓库上传私有组件。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;虚拟仓库：不是真实在存储上的仓库，它用于组织本地仓库和远程仓库&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;配置私有仓库
+    &lt;ol&gt;
+      &lt;li&gt;点击账户头像，新建一个Local Repository仓库&lt;/li&gt;
+      &lt;li&gt;选择仓库类型，可选gradle，maven等等&lt;/li&gt;
+      &lt;li&gt;填写Repository Key，这里的Repository Key必须为独一无二的，类似于仓库名&lt;/li&gt;
+      &lt;li&gt;finish it，仓库创建完成&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;发布公有组件到仓库中
+1.在项目全局目录中配置依赖&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;buildscript&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;jcenter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;classpath&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'com.android.tools.build:gradle:3.0.1'&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;classpath&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;org.jfrog.buildinfo:build-info-extractor-gradle:4.4.7&quot;&lt;/span&gt;
+
+        &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;NOTE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Do&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;place&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;here&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;they&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;belong&lt;/span&gt;
+        &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;individual&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gradle&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;files&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;allprojects&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;jcenter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;apply&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;plugin: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'com.jfrog.artifactory'&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;type: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rootProject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;buildDir&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;2.在你需要上传的组件module中新建gradle.properties文件，写入配置信息&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;GROUP_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;intersection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;testlibrary&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;VERSION_NAME&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;MAVEN_LOCAL_PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:/&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;artifactory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;ARTIFACT_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;你的&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;artifactory&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;账户&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;PASSWORD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;你的&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;artifactory&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;密码&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;3.在组件对应的gradle中引入相应工具&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;apply&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;plugin: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'com.jfrog.artifactory'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;apply&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;plugin: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'maven-publish'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;4.编写gradle上传代码&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;publishing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;publications&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;aar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MavenPublication&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;groupId&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;GROUP_ID&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;VERSION_NAME&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;artifactId&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ARTIFACT_ID&lt;/span&gt;
+
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Tell&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generated&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;*.aar&quot;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;publishing&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;artifact&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;$buildDir/outputs/aar/${project.getName()}-release.aar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+            &lt;span class=&quot;n&quot;&gt;pom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;withXml&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;asNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;appendNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'dependencies'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;configurations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;compile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;allDependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;depGroup&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;group&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;depName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;depVersion&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;version&lt;/span&gt;
+
+                    &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;如果当前库是以&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;形式引用的，重写依赖，&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;project_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;project&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;project_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proj&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;subprojects&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;project_name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                                &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;这些信息是在&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;annotation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lib&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;的&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gradle&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;中定义的&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;depGroup&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;group&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;depName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;artifactId&lt;/span&gt;
+                                &lt;span class=&quot;n&quot;&gt;depVersion&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;version&lt;/span&gt;
+                            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;group&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                        &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;dependency&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;appendNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'dependency'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;dependency&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;appendNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'groupId'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;depGroup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;dependency&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;appendNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'artifactId'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;depName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;n&quot;&gt;dependency&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;appendNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'version'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;depVersion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;artifactory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;contextUrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MAVEN_LOCAL_PATH&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;publish&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;The&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Artifactory&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;publish&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;对应配置中的&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Repository&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Key&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;repoKey&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'lib-local'&lt;/span&gt;
+
+            &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;USER&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;PASSWORD&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;defaults&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Tell&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Artifactory&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Plugin&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;which&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;artifacts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;published&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Artifactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;publications&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'aar'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;publishArtifacts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Properties&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attached&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;published&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;artifacts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;properties&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'qa.level'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'basic'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'dev.team'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'core'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+            &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Publish&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generated&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;files&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Artifactory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;by&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;publishPom&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;5.在项目中执行,发布代码&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gradlew&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clean&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assembleRelease&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gradlew&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;artifactoryPublish&lt;/span&gt;  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;6.在项目中依赖maven 仓库，并使用相应组件&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;allprojects&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://ip:8081/artifactory/lib-local&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;compile&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'com.intersection.testlibrary:1.0.0'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Thu, 08 Mar 2018 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/articles/2018-03/%E4%BD%BF%E7%94%A8artifactory%E9%83%A8%E7%BD%B2%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93</link>
+        <guid isPermaLink="true">http://localhost:4000/articles/2018-03/%E4%BD%BF%E7%94%A8artifactory%E9%83%A8%E7%BD%B2%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93</guid>
+        
+        
+        <category>other</category>
+        
+      </item>
     
       <item>
         <title>HashMap和ConcurrentHashMap的实现原理</title>
@@ -220,6 +393,11 @@ HashMap要实现的是哈希表的效果，尽量实现O(1)级别的增删改查
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;    
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;last-关于hashmap时间复杂度的问题&quot;&gt;Last 关于hashMap时间复杂度的问题&lt;/h3&gt;
+&lt;p&gt;Hashmap中，get操作的时间复杂度应分为数组查找+链表（树）查询两步
+理论最优化的复杂度为o(1),此时时间复杂度应为o(1)+o(1),也就是默认hash不冲突，实际复杂度应为O（1）+O（n）
+当链表长度超过8时，链表会自动转化为红黑树，此时的时间复杂度为O（1）+O（log n）&lt;/p&gt;
 </description>
         <pubDate>Mon, 05 Feb 2018 00:00:00 +0100</pubDate>
         <link>http://localhost:4000/articles/2018-02/hashMap%E5%92%8CConcurrentHashMap%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86</link>
@@ -1127,75 +1305,6 @@ CREATE TABLE IF NOT EXISTS `dandan`(
         <pubDate>Thu, 12 Oct 2017 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95</link>
         <guid isPermaLink="true">http://localhost:4000/articles/2017-10/%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95</guid>
-        
-        
-        <category>设计模式</category>
-        
-      </item>
-    
-      <item>
-        <title>观察者模式</title>
-        <description>&lt;h1 id=&quot;观察者模式&quot;&gt;观察者模式&lt;/h1&gt;
-
-&lt;h2 id=&quot;使用场景&quot;&gt;使用场景：&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;关联行为场景，需要注意的是，关联行为是可拆分的，而不是组合关系&lt;/li&gt;
-  &lt;li&gt;事件多集触发场景&lt;/li&gt;
-  &lt;li&gt;跨系统的消息交换场景，如消息队列，事件总线的处理机制&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;栗子&quot;&gt;栗子&lt;/h2&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Coder&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Observer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;vi&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hi,&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;，订阅源更新了，&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DevTechFrontier&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Observable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;postMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;setChanged&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;notifyObservers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kp&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-       &lt;span class=&quot;no&quot;&gt;DevTechFrontier&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;devTechFrontier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DevTechFrontier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-       &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;WZC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;wzc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;XHH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;笑呵呵&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SBQ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Coder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;伤不起&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;n&quot;&gt;devTechFrontier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addObserver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WZC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;n&quot;&gt;devTechFrontier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addObserver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;XHH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;n&quot;&gt;devTechFrontier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addObserver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SBQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-       &lt;span class=&quot;n&quot;&gt;devTechFrontier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;postMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;今天很给力哦&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;List&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;no&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;emptyList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h4 id=&quot;输出&quot;&gt;输出&lt;/h4&gt;
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;伤不起，订阅源更新了，今天很给力哦&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;Hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;笑呵呵，订阅源更新了，今天很给力哦&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;Hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wzc&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;，订阅源更新了，今天很给力哦&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;关于实现的猜想&quot;&gt;关于实现的猜想&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;观察者内部应该维护了一个订阅者的链表，每次调用notifyObservers()时，其实就是遍历链表，发送消息&lt;/li&gt;
-  &lt;li&gt;参见android LiveData&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Fri, 06 Oct 2017 00:00:00 +0200</pubDate>
-        <link>http://localhost:4000/articles/2017-10/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F</link>
-        <guid isPermaLink="true">http://localhost:4000/articles/2017-10/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F</guid>
         
         
         <category>设计模式</category>
